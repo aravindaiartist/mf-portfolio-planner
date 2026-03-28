@@ -4,3 +4,8 @@ dist/
 .env.*
 *.local
 .vite/
+
+# Patch scripts
+*.mjs
+CONSISTENCY_CHECK.md
+mf-investment-planner/
