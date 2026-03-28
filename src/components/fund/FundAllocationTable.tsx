@@ -62,8 +62,15 @@ export function FundAllocationTable({
       allocation: 0,
       expectedReturn: 12,
     };
+
+    // Preserve scroll position to prevent screen jump when fund is added
+    const scrollY = window.scrollY;
     onAdd(newFund);
-    setShowSearch(false);
+    // Keep search bar open so user can add more funds seamlessly
+    // This also prevents layout shift from search bar closing + pie chart appearing
+    setTimeout(() => {
+      window.scrollTo(0, scrollY);
+    }, 50);
 
     if (result.schemeCode) {
       // Pass selected period so the right CAGR is used as expectedReturn

@@ -26,6 +26,9 @@ export function SipCalculatorSection() {
   const [tempSip, setTempSip] = useState(String(state.monthlySip));
   const [tempStepUp, setTempStepUp] = useState(String(state.stepUpRate));
 
+  // Track if user has interacted with SIP input
+  const [sipTouched, setSipTouched] = useState(state.monthlySip > 0);
+
   // Attention blink: step-up blinks after SIP is set, add-fund blinks after step-up is set
   const [blinkStepUp, setBlinkStepUp] = useState(false);
   const [blinkAddFund, setBlinkAddFund] = useState(false);
@@ -110,14 +113,14 @@ export function SipCalculatorSection() {
               />
             ) : (
               <button
-                onClick={() => { setTempSip(String(state.monthlySip)); setEditingSip(true); }}
+                onClick={() => { setTempSip(String(state.monthlySip)); setEditingSip(true); setSipTouched(true); }}
                 className="text-xl font-mono font-semibold text-slate-100 hover:text-accent transition-colors cursor-pointer flex items-center gap-2"
               >
                 {formatCurrency(state.monthlySip)}
                 <Pencil size={12} className="text-slate-500" />
               </button>
             )}
-            {!sipValidation.valid && (
+            {sipTouched && !sipValidation.valid && (
               <p className="mt-1 text-xs text-warn">{sipValidation.warnings[0]}</p>
             )}
             <button
@@ -175,17 +178,7 @@ export function SipCalculatorSection() {
           </div>
         </div>
 
-        {/* Allocation Chart */}
-        {state.funds.length > 0 && (
-          <div className="bg-glass-bg border border-glass-border rounded-xl p-5 mb-6">
-            <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-4">
-              Fund Allocation Split
-            </h3>
-            <FundAllocationPie funds={state.funds} />
-          </div>
-        )}
-
-        {/* Fund Table */}
+        {/* Fund Table - placed first so pie chart appearing below doesn't cause scroll jump */}
         <div className={
           "bg-glass-bg border rounded-xl p-4 mb-4 transition-all duration-300 " +
           (blinkAddFund
@@ -203,6 +196,16 @@ export function SipCalculatorSection() {
             onAdd={handleAddFund}
           />
         </div>
+
+        {/* Allocation Chart - placed after fund table so it appears below */}
+        {state.funds.length > 0 && (
+          <div className="bg-glass-bg border border-glass-border rounded-xl p-5 mb-4">
+            <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-4">
+              Fund Allocation Split
+            </h3>
+            <FundAllocationPie funds={state.funds} monthlySip={state.monthlySip} />
+          </div>
+        )}
 
         {/* Summary bar */}
         <PortfolioSummaryBar

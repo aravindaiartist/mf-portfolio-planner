@@ -193,21 +193,26 @@ export function FundSearchBox({
         </div>
 
         {/* Period */}
-        <div className="flex items-center gap-0.5 bg-navy-800/60 border border-glass-border rounded-lg p-0.5">
-          {PERIOD_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => onPeriodChange?.(opt.value)}
-              className={cn(
-                "px-3 py-1 rounded-md text-xs font-medium transition-colors",
-                selectedPeriod === opt.value
-                  ? "bg-sky-500/15 text-sky-400"
-                  : "text-slate-500 hover:text-slate-300"
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-0.5 bg-navy-800/60 border border-glass-border rounded-lg p-0.5">
+            {PERIOD_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => onPeriodChange?.(opt.value)}
+                className={cn(
+                  "px-3 py-1 rounded-md text-xs font-medium transition-colors",
+                  selectedPeriod === opt.value
+                    ? "bg-sky-500/15 text-sky-400"
+                    : "text-slate-500 hover:text-slate-300"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <span className="text-[9px] text-slate-600 px-1">
+            Default: 5Y (falls back to 3Y → 10Y → 1Y if unavailable)
+          </span>
         </div>
       </div>
 

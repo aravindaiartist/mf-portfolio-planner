@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import type { Fund, FundBucket, FundStyle } from "@/lib/types";
-import { formatCurrency, formatPercent, formatDecimalAsPercent } from "@/lib/formatters";
+import { formatCurrency, formatPercent, formatDecimalAsPercent, toPercent } from "@/lib/formatters";
 import { validateFundAllocation, validateExpectedReturn } from "@/lib/validators";
-import { getRiskLevel, getCategoryColor } from "@/lib/calc/riskLevel";
+import { getRiskLevel, getCategoryColor, getCategoryAvgCagr } from "@/lib/calc/riskLevel";
 import { Trash2, Loader2, Pencil, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -83,11 +83,20 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
   };
 
   const renderCagrCell = () => {
+    const categoryAvg = getCategoryAvgCagr(fund.category);
+    
     if (fund.isFetchingCagr) {
       return (
-        <div className="flex items-center justify-end gap-1 px-2 py-1">
-          <Loader2 size={12} className="text-accent animate-spin" />
-          <span className="text-xs text-slate-500">Fetching...</span>
+        <div className="flex flex-col items-end gap-0.5 px-2 py-1">
+          <div className="flex items-center gap-1">
+            <Loader2 size={12} className="text-accent animate-spin" />
+            <span className="text-xs text-slate-500">Fetching...</span>
+          </div>
+          {categoryAvg !== null && (
+            <span className="text-[9px] text-slate-500" title="Category average 5Y CAGR">
+              Cat. avg: {categoryAvg}%
+            </span>
+          )}
         </div>
       );
     }
@@ -109,27 +118,61 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
       );
     }
 
+    // Determine if fund is above/below category average
+    const diff = categoryAvg !== null ? fund.expectedReturn - categoryAvg : null;
+    const diffColor = diff !== null 
+      ? (diff >= 2 ? "text-emerald-400" : diff <= -2 ? "text-rose-400" : "text-slate-500")
+      : "text-slate-500";
+
+    // Determine which CAGR period was used (for display)
+    const getUsedPeriod = (): string | null => {
+      if (!fund.isReturnFromApi) return null;
+      // Check which fetched CAGR matches the expectedReturn (with tolerance)
+      const tolerance = 0.5; // 0.5% tolerance for rounding
+      if (fund.fetchedCagr5Y !== null && Math.abs(toPercent(fund.fetchedCagr5Y) - fund.expectedReturn) < tolerance) return "5Y";
+      if (fund.fetchedCagr3Y !== null && Math.abs(toPercent(fund.fetchedCagr3Y) - fund.expectedReturn) < tolerance) return "3Y";
+      if (fund.fetchedCagr10Y !== null && Math.abs(toPercent(fund.fetchedCagr10Y) - fund.expectedReturn) < tolerance) return "10Y";
+      if (fund.fetchedCagr1Y !== null && Math.abs(toPercent(fund.fetchedCagr1Y) - fund.expectedReturn) < tolerance) return "1Y";
+      return null;
+    };
+    const usedPeriod = getUsedPeriod();
+
     return (
-      <div className="flex items-center justify-end gap-1">
-        <button
-          onClick={() => startEdit("expectedReturn", fund.expectedReturn)}
-          className={cn(
-            "text-sm cursor-pointer hover:text-accent transition-colors px-2 py-1 rounded hover:bg-white/5 text-right font-mono",
-            !returnWarning.valid ? "text-warn" : "text-slate-200"
-          )}
-          title="Click to edit (overrides live data)"
-        >
-          <span className="inline-flex items-center gap-1">
-            {displayValue}
-            <Pencil size={9} className="text-slate-600 opacity-0 group-hover/row:opacity-100 transition-opacity" />
-          </span>
-        </button>
-        {fund.isReturnFromApi && (
-          <span
-            className="text-[8px] px-1 py-0.5 rounded bg-accent/10 text-accent font-semibold uppercase tracking-wider flex-shrink-0"
-            title={fund.fetchedCagr3Y != null ? "Live 3Y CAGR: " + formatDecimalAsPercent(fund.fetchedCagr3Y) : "Live CAGR"}
+      <div className="flex flex-col items-end gap-0.5">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => startEdit("expectedReturn", fund.expectedReturn)}
+            className={cn(
+              "text-sm cursor-pointer hover:text-accent transition-colors px-2 py-1 rounded hover:bg-white/5 text-right font-mono",
+              !returnWarning.valid ? "text-warn" : "text-slate-200"
+            )}
+            title="Click to edit (overrides live data)"
           >
-            Live
+            <span className="inline-flex items-center gap-1">
+              {displayValue}
+              <Pencil size={9} className="text-slate-600 opacity-0 group-hover/row:opacity-100 transition-opacity" />
+            </span>
+          </button>
+          {fund.isReturnFromApi && (
+            <span
+              className="text-[8px] px-1 py-0.5 rounded bg-accent/10 text-accent font-semibold uppercase tracking-wider flex-shrink-0"
+              title={usedPeriod ? `Using ${usedPeriod} CAGR from live data` : "Live CAGR"}
+            >
+              {usedPeriod || "Live"}
+            </span>
+          )}
+        </div>
+        {categoryAvg !== null && (
+          <span 
+            className={cn("text-[9px] px-2", diffColor)} 
+            title={`Category average 5Y CAGR: ${categoryAvg}%`}
+          >
+            Cat: {categoryAvg}%
+            {diff !== null && diff !== 0 && (
+              <span className="ml-0.5">
+                ({diff > 0 ? "+" : ""}{diff.toFixed(1)}%)
+              </span>
+            )}
           </span>
         )}
       </div>

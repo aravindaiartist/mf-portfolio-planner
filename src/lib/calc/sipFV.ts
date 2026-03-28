@@ -7,8 +7,12 @@ import type { StepUpRow, FlatVsStepUpRow } from "../types";
 
 /**
  * SIP future value for flat monthly investment.
+ * Uses annuity due formula with effective monthly rate.
+ * Assumes SIP is invested at the beginning of each month.
+ * Matches industry-standard calculators (Advisorkhoj, Groww, etc.)
+ * 
  * @param monthlyAmount ₹ absolute
- * @param annualReturn decimal (0.188 = 18.8%)
+ * @param annualReturn decimal (0.155 = 15.5% p.a.)
  * @param months integer
  * @returns ₹ absolute future value
  */
@@ -18,8 +22,13 @@ export function sipFV(
   months: number
 ): number {
   if (monthlyAmount <= 0 || months <= 0) return 0;
-  const r = annualReturn / 12;
-  if (Math.abs(r) < 1e-10) return monthlyAmount * months;
+  if (Math.abs(annualReturn) < 1e-10) return monthlyAmount * months;
+  
+  // Convert annual rate to effective monthly rate (compound conversion)
+  const r = Math.pow(1 + annualReturn, 1 / 12) - 1;
+  
+  // Annuity Due formula: FV = P × [((1 + r)^n - 1) / r] × (1 + r)
+  // This assumes SIP is invested at the beginning of each month
   return monthlyAmount * (((1 + r) ** months - 1) / r) * (1 + r);
 }
 

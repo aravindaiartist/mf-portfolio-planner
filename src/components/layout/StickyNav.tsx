@@ -104,18 +104,18 @@ export function StickyNav() {
         {/* Divider before analysis link */}
         <div className="w-px h-6 bg-white/[0.08] mx-1 flex-shrink-0 hidden md:block" />
 
-        {/* MF Analysis Platform — same font style as brand name */}
+        {/* MF Analysis Platform — external link with distinct styling */}
         <a
           href="https://mf-analysis-platform.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-2 flex-shrink-0 group"
-          title="Open Mutual Fund Analysis Platform"
+          className="hidden md:flex items-center gap-2 flex-shrink-0 group px-3 py-1.5 rounded-lg border border-white/[0.08] hover:border-accent/30 hover:bg-accent/5 transition-all"
+          title="Open Mutual Fund Analysis Platform (opens in new tab)"
         >
-          <span className="font-display font-bold text-[15px] text-slate-100 tracking-tight group-hover:text-accent transition-colors">
+          <span className="font-display font-bold text-[14px] text-slate-300 tracking-tight group-hover:text-accent transition-colors">
             Mutual Fund Analysis
           </span>
-          <ExternalLink size={13} className="text-slate-400 group-hover:text-accent transition-colors" />
+          <ExternalLink size={12} className="text-slate-500 group-hover:text-accent transition-colors" />
         </a>
       </div>
 

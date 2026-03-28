@@ -147,7 +147,7 @@ export function SettingsSection() {
             <h3 className="text-sm font-semibold text-slate-200">Reset to Defaults</h3>
           </div>
           <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-            Clear all saved data and restore the default 6-fund portfolio.
+            Clear all saved data and start fresh with an empty portfolio.
             This cannot be undone — export your data first if needed.
           </p>
           {!showResetConfirm ? (

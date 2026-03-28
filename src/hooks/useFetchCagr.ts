@@ -7,12 +7,12 @@ import type { Fund } from "@/lib/types";
 
 /**
  * Hook to fetch real CAGR for a fund from mfapi.in NAV history.
- * Auto-sets expectedReturn to 3Y CAGR (or 5Y, or 1Y as fallback).
+ * Auto-sets expectedReturn based on user's preferred period (with fallbacks).
  * Returns a function you call with a fund object.
  */
 export function useFetchCagr() {
   const { dispatch } = usePortfolioContext();
-// @ts-ignore
+
   const fetchCagrForFund = useCallback(async (fund: Fund, preferredPeriod: string = "5") => {
     if (!fund.schemeCode) return;
 
@@ -28,14 +28,33 @@ export function useFetchCagr() {
 
       const cagrResult = computeCagrFromNav(navResponse.navData);
 
-      // Pick best available CAGR for expectedReturn: prefer 3Y, then 5Y, then 1Y
+      // Build fallback chain based on user's preferred period
+      // e.g., if user selects 10Y: try 10Y → 5Y → 3Y → 1Y
+      // if user selects 5Y: try 5Y → 3Y → 10Y → 1Y
+      // if user selects 3Y: try 3Y → 5Y → 10Y → 1Y
+      const cagrMap: Record<string, number | null> = {
+        "1": cagrResult.cagr1Y,
+        "3": cagrResult.cagr3Y,
+        "5": cagrResult.cagr5Y,
+        "10": cagrResult.cagr10Y,
+      };
+
+      const fallbackOrder: Record<string, string[]> = {
+        "1": ["1", "3", "5", "10"],
+        "3": ["3", "5", "10", "1"],
+        "5": ["5", "3", "10", "1"],
+        "10": ["10", "5", "3", "1"],
+      };
+
+      const order = fallbackOrder[preferredPeriod] || fallbackOrder["5"];
       let autoReturn: number | null = null;
-      if (cagrResult.cagr3Y !== null) {
-        autoReturn = Math.round(toPercent(cagrResult.cagr3Y) * 10) / 10; // UI percentage, 1 decimal
-      } else if (cagrResult.cagr5Y !== null) {
-        autoReturn = Math.round(toPercent(cagrResult.cagr5Y) * 10) / 10;
-      } else if (cagrResult.cagr1Y !== null) {
-        autoReturn = Math.round(toPercent(cagrResult.cagr1Y) * 10) / 10;
+
+      for (const period of order) {
+        const cagr = cagrMap[period];
+        if (cagr !== null) {
+          autoReturn = Math.round(toPercent(cagr) * 10) / 10; // UI percentage, 1 decimal
+          break;
+        }
       }
 
       dispatch({

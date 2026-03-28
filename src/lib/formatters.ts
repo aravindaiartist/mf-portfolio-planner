@@ -29,11 +29,14 @@ export const formatCurrency = (
   return `₹${formatNumber(n, decimals)}`;
 };
 
-/** Format large amounts as ₹X.XX Cr or ₹X.X L */
+/** Format large amounts as ₹X.XX Cr or ₹X.XX L — always use compact notation */
 export const formatCurrencyCompact = (n: number): string => {
   if (!isFinite(n)) return "—";
+  if (n === 0) return "₹0";
   if (Math.abs(n) >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
-  if (Math.abs(n) >= 1e5) return `₹${(n / 1e5).toFixed(1)} L`;
+  if (Math.abs(n) >= 1e5) return `₹${(n / 1e5).toFixed(2)} L`;
+  // For values below 1L, show as decimal lakhs (e.g., ₹28,527 → ₹0.29 L)
+  if (Math.abs(n) >= 1000) return `₹${(n / 1e5).toFixed(2)} L`;
   return formatCurrency(n);
 };
 

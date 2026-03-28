@@ -37,9 +37,11 @@ export function DashboardSection() {
   } = usePortfolio();
 
   const tenYearStepUp = stepUpRows.length > 0 ? stepUpRows[stepUpRows.length - 1] : null;
-  const tenYearGain = tenYearStepUp
-    ? tenYearStepUp.portfolioValue - tenYearStepUp.totalInvested
-    : 0;
+  
+  // When step-up is 0%, use flat SIP values for wealth gain calculation
+  const tenYearGain = state.stepUpRate === 0
+    ? portfolioTotals.tenYear - portfolioTotals.investedTenYear
+    : (tenYearStepUp ? tenYearStepUp.portfolioValue - tenYearStepUp.totalInvested : 0);
 
   const taxDrag10Y = ltcgResults.find((r) => r.horizon === 10);
   const inflation10Y = inflationRows.length > 0 ? inflationRows[inflationRows.length - 1] : null;
@@ -77,7 +79,7 @@ export function DashboardSection() {
       description="Portfolio overview and key projections"
     >
       {isEmpty && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="flex flex-col items-center justify-center py-10 text-center">
           <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
             <Wallet size={28} className="text-accent" />
           </div>
@@ -93,10 +95,56 @@ export function DashboardSection() {
               const el = document.getElementById("sip-investment");
               if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
-            className="px-5 py-2.5 rounded-lg bg-accent/10 text-accent text-sm font-medium hover:bg-accent/20 transition-colors"
+            className="px-5 py-2.5 rounded-lg bg-accent/10 text-accent text-sm font-medium hover:bg-accent/20 transition-colors mb-8"
           >
             Get Started
           </button>
+
+          {/* Placeholder dashboard preview */}
+          <div className="w-full max-w-3xl">
+            <p className="text-xs text-slate-500 uppercase tracking-wider mb-4">
+              Your dashboard will show
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              {/* Placeholder KPI cards */}
+              <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
+                <div className="text-xs text-slate-500 mb-1">Monthly SIP</div>
+                <div className="text-lg font-mono text-slate-600">₹—</div>
+              </div>
+              <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
+                <div className="text-xs text-slate-500 mb-1">10Y Corpus</div>
+                <div className="text-lg font-mono text-slate-600">₹— L</div>
+              </div>
+              <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
+                <div className="text-xs text-slate-500 mb-1">Wealth Gain</div>
+                <div className="text-lg font-mono text-slate-600">₹— L</div>
+              </div>
+              <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
+                <div className="text-xs text-slate-500 mb-1">Avg CAGR</div>
+                <div className="text-lg font-mono text-slate-600">—%</div>
+              </div>
+            </div>
+
+            {/* Placeholder chart area */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-glass-bg border border-glass-border rounded-xl p-4 flex flex-col items-center justify-center h-32">
+                <div className="w-16 h-16 rounded-full border-4 border-slate-700 border-t-accent/30 mb-2" />
+                <span className="text-xs text-slate-600">Allocation Split</span>
+              </div>
+              <div className="md:col-span-2 bg-glass-bg border border-glass-border rounded-xl p-4 flex items-end justify-center gap-2 h-32">
+                {[20, 35, 28, 45, 38, 52, 48, 60, 55, 70].map((h, i) => (
+                  <div
+                    key={i}
+                    className="w-4 bg-slate-700/50 rounded-t"
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
+              </div>
+            </div>
+            <p className="text-xs text-slate-600 mt-4">
+              Real projections will appear once you add funds and set your SIP
+            </p>
+          </div>
         </div>
       )}
 
@@ -130,25 +178,27 @@ export function DashboardSection() {
         {/* 3. 10Y Wealth Gain */}
         <KpiCard
           label="10Y Wealth Gain"
-          value={tenYearStepUp ? formatCurrencyCompact(tenYearGain) : "—"}
+          value={formatCurrencyCompact(tenYearGain)}
           animateValue={tenYearGain}
           formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
           icon={<TrendingUp size={15} />}
           polarity="positive"
-          tooltip="The profit your investments earn with step-up SIP — the difference between your total portfolio value and the total money you put in. This is your real wealth creation."
+          tooltip="The profit your investments earn — the difference between your total portfolio value and the total money you put in. This is your real wealth creation."
         />
 
-        {/* 4. 10Y Corpus (Step-Up SIP) */}
-        <KpiCard
-          label="10Y Corpus (Step-Up)"
-          value={tenYearStepUp ? formatCurrencyCompact(tenYearStepUp.portfolioValue) : "—"}
-          animateValue={tenYearStepUp?.portfolioValue ?? 0}
-          formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
-          subtitle={tenYearStepUp ? `Invested: ${formatCurrencyCompact(tenYearStepUp.totalInvested)}` : undefined}
-          icon={<PiggyBank size={15} />}
-          polarity="positive"
-          tooltip="Your estimated portfolio value after 10 years if you increase your SIP by the step-up % every year. Uses the portfolio's weighted average CAGR."
-        />
+        {/* 4. 10Y Corpus (Step-Up SIP) — only show when step-up > 0 */}
+        {state.stepUpRate > 0 && (
+          <KpiCard
+            label="10Y Corpus (Step-Up)"
+            value={tenYearStepUp ? formatCurrencyCompact(tenYearStepUp.portfolioValue) : "—"}
+            animateValue={tenYearStepUp?.portfolioValue ?? 0}
+            formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
+            subtitle={tenYearStepUp ? `Invested: ${formatCurrencyCompact(tenYearStepUp.totalInvested)}` : undefined}
+            icon={<PiggyBank size={15} />}
+            polarity="positive"
+            tooltip="Your estimated portfolio value after 10 years if you increase your SIP by the step-up % every year."
+          />
+        )}
 
         {/* 5. Editable CAGR */}
         <div className="relative bg-glass-bg border border-glass-border rounded-xl p-4 overflow-visible hover:bg-glass-hover transition-colors duration-200">
