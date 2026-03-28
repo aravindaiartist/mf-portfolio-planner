@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import type { Fund, FundBucket, FundStyle } from "@/lib/types";
-import { formatCurrency, formatPercent, formatDecimalAsPercent, toPercent } from "@/lib/formatters";
+import { formatCurrency, formatPercent, toPercent } from "@/lib/formatters";
 import { validateFundAllocation, validateExpectedReturn } from "@/lib/validators";
 import { getRiskLevel, getCategoryColor, getCategoryAvgCagr } from "@/lib/calc/riskLevel";
 import { Trash2, Loader2, Pencil, ExternalLink } from "lucide-react";
@@ -129,10 +129,10 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
       if (!fund.isReturnFromApi) return null;
       // Check which fetched CAGR matches the expectedReturn (with tolerance)
       const tolerance = 0.5; // 0.5% tolerance for rounding
-      if (fund.fetchedCagr5Y !== null && Math.abs(toPercent(fund.fetchedCagr5Y) - fund.expectedReturn) < tolerance) return "5Y";
-      if (fund.fetchedCagr3Y !== null && Math.abs(toPercent(fund.fetchedCagr3Y) - fund.expectedReturn) < tolerance) return "3Y";
-      if (fund.fetchedCagr10Y !== null && Math.abs(toPercent(fund.fetchedCagr10Y) - fund.expectedReturn) < tolerance) return "10Y";
-      if (fund.fetchedCagr1Y !== null && Math.abs(toPercent(fund.fetchedCagr1Y) - fund.expectedReturn) < tolerance) return "1Y";
+      if (fund.fetchedCagr5Y != null && Math.abs(toPercent(fund.fetchedCagr5Y) - fund.expectedReturn) < tolerance) return "5Y";
+      if (fund.fetchedCagr3Y != null && Math.abs(toPercent(fund.fetchedCagr3Y) - fund.expectedReturn) < tolerance) return "3Y";
+      if (fund.fetchedCagr10Y != null && Math.abs(toPercent(fund.fetchedCagr10Y) - fund.expectedReturn) < tolerance) return "10Y";
+      if (fund.fetchedCagr1Y != null && Math.abs(toPercent(fund.fetchedCagr1Y) - fund.expectedReturn) < tolerance) return "1Y";
       return null;
     };
     const usedPeriod = getUsedPeriod();
