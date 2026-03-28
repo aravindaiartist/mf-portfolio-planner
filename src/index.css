@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ── */
+:root {
+  --color-navy-950: #0a0f1a;
+  --color-navy-900: #0d1321;
+  --color-navy-800: #111827;
+  --color-accent: #10b981;
+  --color-accent-light: #14b8a6;
+  --color-negative: #f43f5e;
+  --color-warn: #f59e0b;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-navy-950);
+  min-height: 100vh;
+}
+
+/* ── Scrollbar hiding for nav ── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Custom scrollbar for main content ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Glass card utility ── */
+@layer components {
+  .glass-card {
+    @apply bg-glass-bg border border-glass-border rounded-xl;
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* ── Table number alignment ── */
+.font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Focus ring override ── */
+*:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Select dropdown styling for dark theme ── */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 24px;
+  appearance: none;
+}
+
+select option {
+  background-color: #111827;
+  color: #e2e8f0;
+}
+
+/* ── Input number spinner hide ── */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* ── Recharts tooltip container override ── */
+.recharts-tooltip-wrapper {
+  z-index: 40 !important;
+}
