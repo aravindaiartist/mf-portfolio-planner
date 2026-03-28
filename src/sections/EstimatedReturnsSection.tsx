@@ -47,6 +47,8 @@ export function EstimatedReturnsSection() {
     dispatch({ type: "SET_CAGR_OVERRIDE", value: null });
   }, [dispatch]);
 
+  const noFunds = state.funds.length === 0;
+
   const barData = [
     {
       label: "3 Years",
@@ -71,6 +73,11 @@ export function EstimatedReturnsSection() {
       title="Estimated Returns"
       description="Projected portfolio value at 3, 5, and 10 year horizons. Returns are estimates based on assumed CAGR."
     >
+      {noFunds ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-sm text-slate-500">Add funds in the SIP Investment section above to see projections.</p>
+        </div>
+      ) : (<>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Table */}
         <div className="lg:col-span-3 bg-glass-bg border border-glass-border rounded-xl p-4">
@@ -238,6 +245,7 @@ export function EstimatedReturnsSection() {
           <ProjectionBarChart data={barData} />
         </div>
       </div>
+    </>)}
     </SectionWrapper>
   );
 }

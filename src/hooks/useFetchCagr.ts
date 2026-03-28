@@ -12,8 +12,8 @@ import type { Fund } from "@/lib/types";
  */
 export function useFetchCagr() {
   const { dispatch } = usePortfolioContext();
-
-  const fetchCagrForFund = useCallback(async (fund: Fund) => {
+// @ts-ignore
+  const fetchCagrForFund = useCallback(async (fund: Fund, preferredPeriod: string = "5") => {
     if (!fund.schemeCode) return;
 
     // Mark as fetching

@@ -12,6 +12,8 @@ import { Lightbulb, Pencil } from "lucide-react";
 export function InflationSection() {
   const { state, dispatch, inflationRows } = usePortfolio();
 
+  const noData = state.monthlySip === 0 || state.funds.length === 0;
+
   const inflationValidation = validateInflationRate(state.inflationRate);
   const [editing, setEditing] = useState(false);
   const [tempVal, setTempVal] = useState(String(state.inflationRate));
@@ -30,6 +32,11 @@ export function InflationSection() {
       title="Inflation-Adjusted View"
       description="Real purchasing power of your projected corpus after inflation erosion."
     >
+      {noData ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-sm text-slate-500">Set your monthly SIP and add funds to see inflation-adjusted projections.</p>
+        </div>
+      ) : (<>
       {/* Inflation rate input */}
       <div className="flex items-center gap-3 mb-4">
         <span className="text-sm text-slate-400">Assumed Inflation Rate:</span>
@@ -138,6 +145,7 @@ export function InflationSection() {
           </div>
         </div>
       )}
+    </>)}
     </SectionWrapper>
   );
 }

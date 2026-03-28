@@ -67,12 +67,40 @@ export function DashboardSection() {
     dispatch({ type: "SET_CAGR_OVERRIDE", value: null });
   }, [dispatch]);
 
+  // Empty state check
+  const isEmpty = state.funds.length === 0;
+
   return (
     <SectionWrapper
       id={SECTION_IDS.dashboard}
       title="Dashboard"
       description="Portfolio overview and key projections"
     >
+      {isEmpty && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
+            <Wallet size={28} className="text-accent" />
+          </div>
+          <h3 className="text-lg font-display font-semibold text-slate-200 mb-2">
+            Welcome to your Investment Planner
+          </h3>
+          <p className="text-sm text-slate-400 max-w-md leading-relaxed mb-6">
+            Start by scrolling down to the <span className="text-slate-200 font-medium">SIP Investment</span> section.
+            Set your monthly SIP amount, add your funds, and watch your projections come alive.
+          </p>
+          <button
+            onClick={() => {
+              const el = document.getElementById("sip-investment");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="px-5 py-2.5 rounded-lg bg-accent/10 text-accent text-sm font-medium hover:bg-accent/20 transition-colors"
+          >
+            Get Started
+          </button>
+        </div>
+      )}
+
+      {!isEmpty && (<>
       {/* KPI row — reordered: SIP | 10Y Flat Corpus/Invested | 10Y Gain | 10Y StepUp Corpus/Invested | Editable CAGR */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
 
@@ -272,6 +300,7 @@ export function DashboardSection() {
           </div>
         </div>
       )}
+    </>)}
     </SectionWrapper>
   );
 }

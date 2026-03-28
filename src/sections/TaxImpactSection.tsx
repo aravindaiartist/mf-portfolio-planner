@@ -11,6 +11,8 @@ import { ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 
 export function TaxImpactSection() {
   const { state, ltcgResults, ltcgPerFundResults } = usePortfolio();
+
+  const noData = state.monthlySip === 0 || state.funds.length === 0;
   const [showPerFund, setShowPerFund] = useState(false);
 
   return (
@@ -19,6 +21,11 @@ export function TaxImpactSection() {
       title="LTCG Tax Impact"
       description={`LTCG at ${state.ltcgTaxRate}% on equity gains above ₹${(state.ltcgExemptionPerYear / 1000).toFixed(0)}K per financial year.`}
     >
+      {noData ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-sm text-slate-500">Set your monthly SIP and add funds to see LTCG tax impact.</p>
+        </div>
+      ) : (<>
       {/* Portfolio-level table — PRIMARY */}
       <div className="bg-glass-bg border border-glass-border rounded-xl p-4 mb-4">
         <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-3">
@@ -162,6 +169,7 @@ export function TaxImpactSection() {
           </div>
         )}
       </div>
+    </>)}
     </SectionWrapper>
   );
 }

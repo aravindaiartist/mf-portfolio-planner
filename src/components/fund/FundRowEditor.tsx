@@ -223,10 +223,11 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
       <td className="py-2 px-1 text-center">
         <button
           onClick={() => onRemove(fund.id)}
-          className="text-slate-500 hover:text-rose-400 transition-colors p-1"
+          className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-slate-500 hover:text-rose-400 hover:bg-rose-400/10 transition-colors"
           title="Remove fund"
         >
-          <Trash2 size={14} />
+          <Trash2 size={12} />
+          <span className="hidden sm:inline">Remove</span>
         </button>
       </td>
     </tr>
