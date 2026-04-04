@@ -76,8 +76,11 @@ function AppInner() {
           <p className="text-xs text-slate-500 leading-relaxed">
             Data sourced from AMFI via mfapi.in · Benchmarks per SEBI Circular Oct 2021
           </p>
-          <p className="text-xs text-slate-600 mt-1">
-            For Personal Use Only · Not for commercial distribution
+          <p className="text-xs text-slate-500 mt-3">
+            © 2026 Aravindan Natarajan. All rights reserved.
+          </p>
+          <p className="text-[10px] text-slate-600 mt-1">
+            Not for commercial distribution
           </p>
         </div>
       </footer>

@@ -32,6 +32,8 @@ export interface Fund {
   allocation: number;
   /** UI percentage: 18.8 means 18.8% p.a. expected CAGR */
   expectedReturn: number;
+  /** ₹ absolute: manual SIP amount override (null = auto-calculated from allocation) */
+  sipOverride?: number | null;
   /** ISIN code, optional */
   isin?: string;
   /** UI percentage: 0.58 means 0.58% expense ratio */
@@ -66,6 +68,8 @@ export interface PortfolioState {
   ltcgTaxRate: number;
   /** UI percentage: manual CAGR override — null means use computed wtd avg */
   cagrOverride?: number | null;
+  /** UI percentage: target Core allocation (default 60), Satellite = 100 - this */
+  targetCoreSplit: number;
   /** Map of fundId → user-entered current market value (₹ absolute). V1B rebalancing. */
   rebalanceEntries: Record<string, number>;
 }
@@ -256,6 +260,8 @@ export type PortfolioAction =
   | { type: "SET_LTCG_EXEMPTION"; value: number }
   | { type: "SET_LTCG_TAX_RATE"; value: number }
   | { type: "SET_CAGR_OVERRIDE"; value: number | null }
+  | { type: "SET_TARGET_CORE_SPLIT"; value: number }
+  | { type: "SET_FUND_SIP_OVERRIDE"; fundId: string; sipAmount: number | null }
   | { type: "SET_FUND_CAGR"; fundId: string; cagr: { cagr1Y: number | null; cagr3Y: number | null; cagr5Y: number | null; cagr10Y: number | null; latestNav: number | null }; autoSetReturn: number | null }
   | { type: "SET_FUND_FETCHING"; fundId: string; fetching: boolean }
   | { type: "SET_FUND_CAGR"; fundId: string; cagr: { cagr1Y: number | null; cagr3Y: number | null; cagr5Y: number | null; cagr10Y: number | null; latestNav: number | null }; autoSetReturn: number | null }

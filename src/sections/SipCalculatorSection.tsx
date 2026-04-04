@@ -203,7 +203,12 @@ export function SipCalculatorSection() {
             <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-4">
               Fund Allocation Split
             </h3>
-            <FundAllocationPie funds={state.funds} monthlySip={state.monthlySip} />
+            <FundAllocationPie 
+              funds={state.funds} 
+              monthlySip={state.monthlySip}
+              targetCoreSplit={state.targetCoreSplit}
+              onCoreSplitChange={(value) => dispatch({ type: "SET_TARGET_CORE_SPLIT", value })}
+            />
           </div>
         )}
 

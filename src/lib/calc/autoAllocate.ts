@@ -1,23 +1,23 @@
 // ──────────────────────────────────────────────────────────
 // autoAllocate.ts — Auto-distribute allocation across funds
-// Rule: 60% Core, 40% Satellite, equal within each bucket
-// Called on ADD_FUND and REMOVE_FUND only (not manual edits)
+// Rule: User-defined Core/Satellite split, equal within each bucket
+// Called on ADD_FUND, REMOVE_FUND, and when Core/Satellite slider changes
 // ──────────────────────────────────────────────────────────
 
 import type { Fund } from "../types";
 
-const CORE_SHARE = 60;
-const SATELLITE_SHARE = 40;
+const DEFAULT_CORE_SHARE = 60;
 
 /**
- * Recalculate fund allocations using the 60/40 Core/Satellite rule.
+ * Recalculate fund allocations using the Core/Satellite rule.
  * Distributes equally within each bucket.
  * Handles rounding so total is exactly 100%.
  *
  * @param funds Current fund array
+ * @param targetCoreSplit UI percentage for Core allocation (default 60)
  * @returns New fund array with updated allocation values (UI percentages)
  */
-export function autoAllocate(funds: Fund[]): Fund[] {
+export function autoAllocate(funds: Fund[], targetCoreSplit: number = DEFAULT_CORE_SHARE): Fund[] {
   if (funds.length === 0) return [];
 
   const coreFunds = funds.filter((f) => f.bucket === "Core");
@@ -37,8 +37,9 @@ export function autoAllocate(funds: Fund[]): Fund[] {
     corePool = 100;
     satPool = 0;
   } else {
-    corePool = CORE_SHARE;
-    satPool = SATELLITE_SHARE;
+    // Use the user-defined split
+    corePool = targetCoreSplit;
+    satPool = 100 - targetCoreSplit;
   }
 
   // Distribute equally within each bucket, rounded to 1 decimal
@@ -71,8 +72,10 @@ export function autoAllocate(funds: Fund[]): Fund[] {
   });
 
   // Return new array with updated allocations (preserves all other fields)
+  // Clear sipOverride when reallocating since allocation changed
   return funds.map((f) => ({
     ...f,
     allocation: allocationMap.get(f.id) ?? f.allocation,
+    sipOverride: null, // Clear manual SIP when allocation changes
   }));
 }

@@ -14,6 +14,7 @@ function hydrateState(raw: PortfolioState): PortfolioState {
   return {
     ...raw,
     rebalanceEntries: raw.rebalanceEntries ?? {},
+    targetCoreSplit: raw.targetCoreSplit ?? 60,
   };
 }
 
@@ -26,7 +27,7 @@ function portfolioReducer(
       return { ...state, funds: action.funds };
 
     case "ADD_FUND":
-      return { ...state, funds: autoAllocate([...state.funds, action.fund]) };
+      return { ...state, funds: autoAllocate([...state.funds, action.fund], state.targetCoreSplit) };
 
     case "UPDATE_FUND": {
       const oldFund = state.funds.find((f: Fund) => f.id === action.fund.id);
@@ -36,7 +37,7 @@ function portfolioReducer(
       );
       return {
         ...state,
-        funds: bucketChanged ? autoAllocate(updatedFunds) : updatedFunds,
+        funds: bucketChanged ? autoAllocate(updatedFunds, state.targetCoreSplit) : updatedFunds,
       };
     }
 
@@ -45,7 +46,7 @@ function portfolioReducer(
         state.rebalanceEntries ?? {};
       return {
         ...state,
-        funds: autoAllocate(state.funds.filter((f: Fund) => f.id !== action.fundId)),
+        funds: autoAllocate(state.funds.filter((f: Fund) => f.id !== action.fundId), state.targetCoreSplit),
         rebalanceEntries: remainingEntries,
       };
     }
@@ -76,6 +77,35 @@ function portfolioReducer(
 
     case "SET_CAGR_OVERRIDE":
       return { ...state, cagrOverride: action.value };
+
+    case "SET_TARGET_CORE_SPLIT":
+      // Re-allocate all funds when Core/Satellite split changes
+      return {
+        ...state,
+        targetCoreSplit: action.value,
+        funds: autoAllocate(state.funds, action.value),
+      };
+
+    case "SET_FUND_SIP_OVERRIDE": {
+      // When user manually sets SIP amount, recalculate allocation
+      const updatedFunds = state.funds.map((f: Fund) => {
+        if (f.id !== action.fundId) return f;
+        if (action.sipAmount === null) {
+          // Clear override, revert to auto-calculated
+          return { ...f, sipOverride: null };
+        }
+        // Set manual SIP and calculate new allocation
+        const newAllocation = state.monthlySip > 0 
+          ? (action.sipAmount / state.monthlySip) * 100 
+          : f.allocation;
+        return { 
+          ...f, 
+          sipOverride: action.sipAmount,
+          allocation: Math.round(newAllocation * 100) / 100,
+        };
+      });
+      return { ...state, funds: updatedFunds };
+    }
 
     case "SET_FUND_CAGR":
       return {

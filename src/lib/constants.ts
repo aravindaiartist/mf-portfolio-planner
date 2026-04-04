@@ -9,6 +9,7 @@ export const DEFAULT_PORTFOLIO_STATE: PortfolioState = {
   inflationRate: 6,
   ltcgExemptionPerYear: 125000,
   ltcgTaxRate: 12.5,
+  targetCoreSplit: 60,
   rebalanceEntries: {},
 };
 

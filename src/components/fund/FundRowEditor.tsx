@@ -3,20 +3,22 @@ import type { Fund, FundBucket, FundStyle } from "@/lib/types";
 import { formatCurrency, formatPercent, toPercent } from "@/lib/formatters";
 import { validateFundAllocation, validateExpectedReturn } from "@/lib/validators";
 import { getRiskLevel, getCategoryColor, getCategoryAvgCagr } from "@/lib/calc/riskLevel";
-import { Trash2, Loader2, Pencil, ExternalLink } from "lucide-react";
+import { Trash2, Loader2, Pencil, ExternalLink, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FundRowEditorProps {
   fund: Fund;
   sipAmount: number;
+  monthlySip: number; // Total monthly SIP for recalculating allocation
   onUpdate: (fund: Fund) => void;
   onRemove: (fundId: string) => void;
+  onSipOverride?: (fundId: string, sipAmount: number | null) => void;
 }
 
 const BUCKET_OPTIONS: FundBucket[] = ["Core", "Satellite"];
 const STYLE_OPTIONS: FundStyle[] = ["Growth", "Value", "Momentum", "Blend / Market Beta"];
 
-export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEditorProps) {
+export function FundRowEditor({ fund, sipAmount, monthlySip, onUpdate, onRemove, onSipOverride }: FundRowEditorProps) {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
 
@@ -24,6 +26,9 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
   const returnWarning = validateExpectedReturn(fund.expectedReturn);
   const risk = getRiskLevel(fund.category);
   const catColor = getCategoryColor(fund.category);
+
+  // Check if this fund has a manual SIP override
+  const hasManualSip = fund.sipOverride != null;
 
   const startEdit = useCallback((field: string, currentValue: string | number) => {
     setEditingField(field);
@@ -33,12 +38,27 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
   const commitEdit = useCallback((field: string) => {
     const num = parseFloat(editValue);
     if (field === "allocation" && isFinite(num)) {
-      onUpdate({ ...fund, allocation: Math.max(0, Math.min(100, num)) });
+      onUpdate({ ...fund, allocation: Math.max(0, Math.min(100, num)), sipOverride: null });
     } else if (field === "expectedReturn" && isFinite(num)) {
       onUpdate({ ...fund, expectedReturn: Math.max(0, num), isReturnFromApi: false });
+    } else if (field === "sipAmount" && isFinite(num) && num >= 0) {
+      // When user edits SIP amount, recalculate allocation
+      if (monthlySip > 0) {
+        const newAllocation = (num / monthlySip) * 100;
+        onUpdate({ 
+          ...fund, 
+          sipOverride: num,
+          allocation: Math.round(newAllocation * 100) / 100,
+        });
+      }
     }
     setEditingField(null);
-  }, [editValue, fund, onUpdate]);
+  }, [editValue, fund, onUpdate, monthlySip]);
+
+  const resetSipToAuto = useCallback(() => {
+    // Clear manual override, revert to auto-calculated
+    onUpdate({ ...fund, sipOverride: null });
+  }, [fund, onUpdate]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent, field: string) => {
     if (e.key === "Enter") commitEdit(field);
@@ -256,10 +276,49 @@ export function FundRowEditor({ fund, sipAmount, onUpdate, onRemove }: FundRowEd
         {renderCagrCell()}
       </td>
 
-      {/* Monthly SIP — shows ₹ + % */}
+      {/* Monthly SIP — editable with manual override indicator */}
       <td className="py-2 px-1 text-right">
-        <div className="text-sm font-mono text-slate-300">{formatCurrency(sipAmount)}</div>
-        <div className="text-[10px] font-mono text-slate-500">{formatPercent(fund.allocation, 0)}</div>
+        {editingField === "sipAmount" ? (
+          <input
+            autoFocus
+            type="number"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onBlur={() => commitEdit("sipAmount")}
+            onKeyDown={(e) => handleKeyDown(e, "sipAmount")}
+            className="w-full bg-navy-800 border border-accent/40 rounded px-2 py-1 text-sm text-slate-100 font-mono outline-none focus:border-accent text-right"
+            step="500"
+            min="0"
+          />
+        ) : (
+          <div className="flex flex-col items-end gap-0.5">
+            <button
+              onClick={() => startEdit("sipAmount", sipAmount)}
+              className={cn(
+                "text-sm font-mono cursor-pointer hover:text-accent transition-colors px-2 py-0.5 rounded hover:bg-white/5",
+                hasManualSip ? "text-amber-400" : "text-slate-300"
+              )}
+              title={hasManualSip ? "Manual SIP (click to edit)" : "Click to set custom SIP amount"}
+            >
+              <span className="inline-flex items-center gap-1">
+                {formatCurrency(sipAmount)}
+                <Pencil size={9} className="text-slate-600 opacity-0 group-hover/row:opacity-100 transition-opacity" />
+              </span>
+            </button>
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] font-mono text-slate-500">{formatPercent(fund.allocation, 1)}</span>
+              {hasManualSip && (
+                <button
+                  onClick={resetSipToAuto}
+                  className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors inline-flex items-center gap-0.5"
+                  title="Reset to auto-calculated SIP"
+                >
+                  <RotateCcw size={8} /> Auto
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </td>
 
       {/* Remove */}

@@ -32,7 +32,11 @@ export function FundAllocationTable({
   const [selectedPeriod, setSelectedPeriod] = useState("5");
 
   const totalAllocation = funds.reduce((s, f) => s + f.allocation, 0);
-  const totalSip = funds.reduce((s, f) => s + Math.round(monthlySip * toDecimal(f.allocation)), 0);
+  // Use sipOverride if set, otherwise calculate from allocation
+  const totalSip = funds.reduce((s, f) => {
+    const fundSip = f.sipOverride != null ? f.sipOverride : Math.round(monthlySip * toDecimal(f.allocation));
+    return s + fundSip;
+  }, 0);
   const allocationValid = Math.abs(totalAllocation - 100) < 0.01;
 
   const handleFundSelected = useCallback((result: MfSearchResult) => {
@@ -137,15 +141,22 @@ export function FundAllocationTable({
               </tr>
             </thead>
             <tbody>
-              {funds.map((fund) => (
-                <FundRowEditor
-                  key={fund.id}
-                  fund={fund}
-                  sipAmount={Math.round(monthlySip * toDecimal(fund.allocation))}
-                  onUpdate={onUpdate}
-                  onRemove={onRemove}
-                />
-              ))}
+              {funds.map((fund) => {
+                // Use sipOverride if set, otherwise calculate from allocation
+                const actualSipAmount = fund.sipOverride != null 
+                  ? fund.sipOverride 
+                  : Math.round(monthlySip * toDecimal(fund.allocation));
+                return (
+                  <FundRowEditor
+                    key={fund.id}
+                    fund={fund}
+                    sipAmount={actualSipAmount}
+                    monthlySip={monthlySip}
+                    onUpdate={onUpdate}
+                    onRemove={onRemove}
+                  />
+                );
+              })}
 
               {/* Total row */}
               <tr className="border-t-2 border-accent/20 bg-white/[0.02]">

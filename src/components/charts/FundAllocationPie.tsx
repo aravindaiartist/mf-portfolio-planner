@@ -1,10 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import type { Fund } from "@/lib/types";
 import { formatCurrency } from "@/lib/formatters";
 
 interface FundAllocationPieProps {
   funds: Fund[];
   monthlySip?: number;
+  targetCoreSplit?: number;
+  onCoreSplitChange?: (value: number) => void;
 }
 
 const COLORS = [
@@ -26,7 +28,14 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
-export function FundAllocationPie({ funds, monthlySip = 0 }: FundAllocationPieProps) {
+export function FundAllocationPie({ 
+  funds, 
+  monthlySip = 0,
+  targetCoreSplit = 60,
+  onCoreSplitChange,
+}: FundAllocationPieProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  
   const slices: SliceData[] = useMemo(() => {
     const total = funds.reduce((s, f) => s + f.allocation, 0);
     if (total === 0) return [];
@@ -47,7 +56,7 @@ export function FundAllocationPie({ funds, monthlySip = 0 }: FundAllocationPiePr
     });
   }, [funds]);
 
-  // Calculate Core vs Satellite split
+  // Calculate Core vs Satellite split from actual funds
   const coreSatellite = useMemo(() => {
     const core = funds.filter(f => f.bucket === "Core");
     const satellite = funds.filter(f => f.bucket === "Satellite");
@@ -70,6 +79,22 @@ export function FundAllocationPie({ funds, monthlySip = 0 }: FundAllocationPiePr
       satCount: satellite.length,
     };
   }, [funds, monthlySip]);
+
+  // Handle slider drag
+  const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    onCoreSplitChange?.(value);
+  }, [onCoreSplitChange]);
+
+  // Get risk label based on core split
+  const getRiskLabel = (corePct: number): { label: string; color: string } => {
+    if (corePct >= 70) return { label: "Conservative", color: "text-emerald-400" };
+    if (corePct >= 50) return { label: "Moderate", color: "text-sky-400" };
+    if (corePct >= 30) return { label: "Aggressive", color: "text-amber-400" };
+    return { label: "Very Aggressive", color: "text-rose-400" };
+  };
+
+  const riskInfo = getRiskLabel(targetCoreSplit);
 
   if (funds.length === 0) {
     return (
@@ -152,30 +177,89 @@ export function FundAllocationPie({ funds, monthlySip = 0 }: FundAllocationPiePr
           ))}
         </div>
 
-        {/* Core vs Satellite Breakdown */}
+        {/* Core vs Satellite Breakdown with Slider */}
         {monthlySip > 0 && (
           <div className="pt-3 border-t border-glass-border">
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-2">
-              Monthly SIP Split
+            {/* Header with risk label */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-[10px] text-slate-500 uppercase tracking-wider">
+                Core / Satellite Split
+              </div>
+              <span className={`text-[10px] font-medium ${riskInfo.color}`}>
+                {riskInfo.label}
+              </span>
             </div>
             
-            {/* Stacked horizontal bar */}
-            <div className="h-3 rounded-full overflow-hidden flex bg-navy-800 mb-3">
-              {coreSatellite.corePercent > 0 && (
-                <div 
-                  className="h-full bg-emerald-500/80 transition-all duration-300"
-                  style={{ width: `${coreSatellite.corePercent}%` }}
-                  title={`Core: ${coreSatellite.coreAlloc}%`}
-                />
-              )}
-              {coreSatellite.satPercent > 0 && (
-                <div 
-                  className="h-full bg-sky-500/80 transition-all duration-300"
-                  style={{ width: `${coreSatellite.satPercent}%` }}
-                  title={`Satellite: ${coreSatellite.satAlloc}%`}
-                />
-              )}
-            </div>
+            {/* Interactive Slider */}
+            {onCoreSplitChange && coreSatellite.coreCount > 0 && coreSatellite.satCount > 0 && (
+              <div className="mb-3">
+                <div className="relative h-8 flex items-center">
+                  {/* Background track */}
+                  <div className="absolute inset-x-0 h-3 rounded-full overflow-hidden flex">
+                    <div 
+                      className="h-full bg-emerald-500/60 transition-all duration-150"
+                      style={{ width: `${targetCoreSplit}%` }}
+                    />
+                    <div 
+                      className="h-full bg-sky-500/60 transition-all duration-150"
+                      style={{ width: `${100 - targetCoreSplit}%` }}
+                    />
+                  </div>
+                  
+                  {/* Slider input */}
+                  <input
+                    type="range"
+                    min="20"
+                    max="80"
+                    step="5"
+                    value={targetCoreSplit}
+                    onChange={handleSliderChange}
+                    onMouseDown={() => setIsDragging(true)}
+                    onMouseUp={() => setIsDragging(false)}
+                    onTouchStart={() => setIsDragging(true)}
+                    onTouchEnd={() => setIsDragging(false)}
+                    className="absolute inset-x-0 w-full h-8 opacity-0 cursor-pointer z-10"
+                    title="Drag to adjust Core/Satellite split"
+                  />
+                  
+                  {/* Thumb indicator */}
+                  <div 
+                    className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-2 border-slate-400 shadow-lg transition-all duration-150 pointer-events-none ${isDragging ? 'scale-110 border-accent' : ''}`}
+                    style={{ left: `calc(${targetCoreSplit}% - 10px)` }}
+                  >
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-300 whitespace-nowrap">
+                      {targetCoreSplit}/{100 - targetCoreSplit}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Labels */}
+                <div className="flex justify-between text-[9px] text-slate-500 mt-1">
+                  <span>← More Core (Stable)</span>
+                  <span>More Satellite (Growth) →</span>
+                </div>
+              </div>
+            )}
+
+            {/* Static bar when no slider (only one bucket type) */}
+            {(!onCoreSplitChange || coreSatellite.coreCount === 0 || coreSatellite.satCount === 0) && (
+              <div className="h-3 rounded-full overflow-hidden flex bg-navy-800 mb-3">
+                {coreSatellite.corePercent > 0 && (
+                  <div 
+                    className="h-full bg-emerald-500/80 transition-all duration-300"
+                    style={{ width: `${coreSatellite.corePercent}%` }}
+                    title={`Core: ${coreSatellite.coreAlloc}%`}
+                  />
+                )}
+                {coreSatellite.satPercent > 0 && (
+                  <div 
+                    className="h-full bg-sky-500/80 transition-all duration-300"
+                    style={{ width: `${coreSatellite.satPercent}%` }}
+                    title={`Satellite: ${coreSatellite.satAlloc}%`}
+                  />
+                )}
+              </div>
+            )}
 
             {/* Core row */}
             <div className="flex items-center justify-between mb-1.5">
