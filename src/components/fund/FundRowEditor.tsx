@@ -12,13 +12,12 @@ interface FundRowEditorProps {
   monthlySip: number; // Total monthly SIP for recalculating allocation
   onUpdate: (fund: Fund) => void;
   onRemove: (fundId: string) => void;
-  onSipOverride?: (fundId: string, sipAmount: number | null) => void;
-}
+ }
 
 const BUCKET_OPTIONS: FundBucket[] = ["Core", "Satellite"];
 const STYLE_OPTIONS: FundStyle[] = ["Growth", "Value", "Momentum", "Blend / Market Beta"];
 
-export function FundRowEditor({ fund, sipAmount, monthlySip, onUpdate, onRemove, onSipOverride }: FundRowEditorProps) {
+export function FundRowEditor({ fund, sipAmount, monthlySip, onUpdate, onRemove }: FundRowEditorProps) {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
 

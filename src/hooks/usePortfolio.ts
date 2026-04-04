@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { usePortfolioContext } from "@/context/PortfolioContext";
 import { toDecimal, toPercent } from "@/lib/formatters";
-import { weightedCagr } from "@/lib/calc/weightedCagr";
 import { sipFV, stepUpProjection, flatVsStepUpData } from "@/lib/calc/sipFV";
 import { ltcgPortfolio, ltcgPerFund } from "@/lib/calc/ltcgTax";
 import { inflationProjection } from "@/lib/calc/inflation";
