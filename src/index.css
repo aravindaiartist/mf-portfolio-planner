@@ -4,12 +4,12 @@
 
 /* ── Design Tokens ── */
 :root {
-  --color-navy-950: #0a0f1a;
-  --color-navy-900: #0d1321;
-  --color-navy-800: #111827;
-  --color-accent: #10b981;
-  --color-accent-light: #14b8a6;
-  --color-negative: #f43f5e;
+  --color-navy-950: #f8fafc;
+  --color-navy-900: #ffffff;
+  --color-navy-800: #f1f5f9;
+  --color-accent: #059669;
+  --color-accent-light: #10b981;
+  --color-negative: #ef4444;
   --color-warn: #f59e0b;
 }
 

@@ -30,7 +30,13 @@ function AppInner() {
 
       <main className="pt-14 pb-12">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-          <div className="flex flex-col gap-16 py-8">
+          <div className="pt-12 pb-6 border-b border-slate-200 mb-8">
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-slate-900 tracking-tight">Your Financial Journey</h1>
+            <p className="mt-4 text-slate-600 max-w-xl text-lg">
+              Plan your mutual fund investments, visualize your wealth growth, and take control of your portfolio step-by-step.
+            </p>
+          </div>
+          <div className="flex flex-col gap-16 py-4">
             {/* Core Sections */}
             <DashboardSection />
             <SipCalculatorSection />
