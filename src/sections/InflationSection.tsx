@@ -7,7 +7,7 @@ import {
   formatDecimalAsPercent,
 } from "@/lib/formatters";
 import { validateInflationRate, sanitizeNumber } from "@/lib/validators";
-import { Lightbulb, Pencil } from "lucide-react";
+import { Lightbulb, Pencil, TrendingDown } from "lucide-react";
 
 export function InflationSection() {
   const { state, dispatch, inflationRows } = usePortfolio();
@@ -31,6 +31,8 @@ export function InflationSection() {
       id={SECTION_IDS.inflation}
       title="Inflation-Adjusted View"
       description="Real purchasing power of your projected corpus after inflation erosion."
+      icon={<TrendingDown size={20} />}
+      accent="orange"
     >
       {noData ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -72,7 +74,7 @@ export function InflationSection() {
       </div>
 
       {/* Table */}
-      <div className="bg-glass-bg border border-glass-border rounded-xl p-4 mb-4">
+      <div className="rounded-2xl p-5 mb-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
@@ -126,7 +128,7 @@ export function InflationSection() {
 
       {/* Insight callout */}
       {last && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/5 border border-accent/10">
+        <div className="flex items-start gap-3 p-5 rounded-2xl" style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.15)' }}>
           <Lightbulb size={18} className="text-accent mt-0.5 flex-shrink-0" />
           <div className="text-sm text-slate-300 leading-relaxed">
             <strong className="text-slate-100">Key Insight:</strong> At{" "}

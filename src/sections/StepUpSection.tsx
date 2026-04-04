@@ -6,6 +6,7 @@ import {
   formatCurrency,
   formatCurrencyCompact,
 } from "@/lib/formatters";
+import { ArrowUpRight } from "lucide-react";
 
 export function StepUpSection() {
   const { state, stepUpRows, flatVsStepUp, portfolioTotals } = usePortfolio();
@@ -26,6 +27,8 @@ export function StepUpSection() {
       id={SECTION_IDS.stepUp}
       title="Step-Up vs Flat SIP"
       description={`Annual ${state.stepUpRate}% step-up vs flat ₹${state.monthlySip.toLocaleString("en-IN")}/mo — 10 year comparison.`}
+      icon={<ArrowUpRight size={20} />}
+      accent="blue"
     >
       {noData ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -34,8 +37,8 @@ export function StepUpSection() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Year-by-year table */}
-          <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
-            <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-3">
+          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+            <h3 className="label-text mb-3">
               Year-by-Year Step-Up Projection
             </h3>
             <div className="overflow-x-auto">
@@ -78,8 +81,8 @@ export function StepUpSection() {
           </div>
 
           {/* 10-Year summary comparison */}
-          <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
-            <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-4">
+          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+            <h3 className="label-text mb-4">
               10-Year Summary
             </h3>
 

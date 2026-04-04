@@ -11,7 +11,7 @@ import {
   validateStepUpRate,
   sanitizeNumber,
 } from "@/lib/validators";
-import { RotateCcw, Pencil } from "lucide-react";
+import { RotateCcw, Pencil, Calculator } from "lucide-react";
 import type { Fund } from "@/lib/types";
 
 export function SipCalculatorSection() {
@@ -89,13 +89,15 @@ export function SipCalculatorSection() {
       id={SECTION_IDS.sipCalculator}
       title="SIP Investment"
       description="Define your monthly SIP, step-up rate, and fund allocation."
+      icon={<Calculator size={20} />}
+      accent="purple"
     >
       <div ref={sipSectionRef}>
         {/* SIP + Step-Up inputs */}
         <div className="flex flex-wrap gap-4 mb-6">
           {/* Monthly SIP */}
-          <div className="bg-glass-bg border border-glass-border rounded-xl p-4 min-w-[200px]">
-            <label className="text-xs text-slate-400 uppercase tracking-wider block mb-1">
+          <div className="rounded-2xl p-4 min-w-[200px]" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.18)' }}>
+            <label className="label-text block mb-1">
               Monthly SIP
             </label>
             {editingSip ? (
@@ -109,12 +111,12 @@ export function SipCalculatorSection() {
                   if (e.key === "Enter") commitSip();
                   if (e.key === "Escape") setEditingSip(false);
                 }}
-                className="w-full bg-navy-800 border border-accent/40 rounded px-2 py-1 text-lg font-mono text-slate-100 outline-none focus:border-accent"
+                className="w-full bg-navy-800 border border-blue-400/40 rounded-lg px-2 py-1 text-lg font-mono text-slate-100 outline-none focus:border-blue-400 transition-colors"
               />
             ) : (
               <button
                 onClick={() => { setTempSip(String(state.monthlySip)); setEditingSip(true); setSipTouched(true); }}
-                className="text-xl font-mono font-semibold text-slate-100 hover:text-accent transition-colors cursor-pointer flex items-center gap-2"
+                className="text-xl font-mono font-bold text-blue-300 hover:text-blue-200 transition-colors cursor-pointer flex items-center gap-2"
               >
                 {formatCurrency(state.monthlySip)}
                 <Pencil size={12} className="text-slate-500" />
@@ -137,12 +139,12 @@ export function SipCalculatorSection() {
 
           {/* Step-Up Rate */}
           <div className={
-            "bg-glass-bg border rounded-xl p-4 min-w-[160px] transition-all duration-300 " +
+            "rounded-2xl p-4 min-w-[160px] transition-all duration-300 " +
             (blinkStepUp
-              ? "border-accent shadow-lg shadow-accent/20 animate-pulse"
-              : "border-glass-border")
-          }>
-            <label className="text-xs text-slate-400 uppercase tracking-wider block mb-1">
+              ? "shadow-lg shadow-emerald-900/30 animate-pulse"
+              : "")
+          } style={{ background: blinkStepUp ? 'rgba(16,185,129,0.08)' : 'rgba(139,92,246,0.06)', border: blinkStepUp ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(139,92,246,0.18)' }}>
+            <label className="label-text block mb-1">
               Annual Step-Up
               {blinkStepUp && <span className="ml-2 text-accent text-[10px] font-normal">← Set this next</span>}
             </label>
@@ -158,7 +160,7 @@ export function SipCalculatorSection() {
                     if (e.key === "Enter") commitStepUp();
                     if (e.key === "Escape") setEditingStepUp(false);
                   }}
-                  className="w-20 bg-navy-800 border border-accent/40 rounded px-2 py-1 text-lg font-mono text-slate-100 outline-none focus:border-accent"
+                  className="w-20 bg-navy-800 border border-violet-400/40 rounded-lg px-2 py-1 text-lg font-mono text-slate-100 outline-none focus:border-violet-400 transition-colors"
                   step="1"
                 />
                 <span className="ml-1 text-lg text-slate-400">%</span>
@@ -166,7 +168,7 @@ export function SipCalculatorSection() {
             ) : (
               <button
                 onClick={() => { setTempStepUp(String(state.stepUpRate)); setEditingStepUp(true); }}
-                className="text-xl font-mono font-semibold text-slate-100 hover:text-accent transition-colors cursor-pointer flex items-center gap-2"
+                className="text-xl font-mono font-bold text-violet-300 hover:text-violet-200 transition-colors cursor-pointer flex items-center gap-2"
               >
                 {state.stepUpRate}%
                 <Pencil size={12} className="text-slate-500" />
@@ -180,11 +182,11 @@ export function SipCalculatorSection() {
 
         {/* Fund Table - placed first so pie chart appearing below doesn't cause scroll jump */}
         <div className={
-          "bg-glass-bg border rounded-xl p-4 mb-4 transition-all duration-300 " +
+          "rounded-2xl p-4 mb-4 transition-all duration-300 " +
           (blinkAddFund
-            ? "border-accent shadow-lg shadow-accent/20 animate-pulse"
-            : "border-glass-border")
-        }>
+            ? "shadow-lg shadow-emerald-900/30 animate-pulse"
+            : "")
+        } style={{ background: blinkAddFund ? 'rgba(16,185,129,0.06)' : 'rgba(255,255,255,0.03)', border: blinkAddFund ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(255,255,255,0.08)' }}>
           {blinkAddFund && state.funds.length === 0 && (
             <p className="text-xs text-accent mb-2 font-medium">↓ Now add your funds below</p>
           )}
@@ -199,8 +201,8 @@ export function SipCalculatorSection() {
 
         {/* Allocation Chart - placed after fund table so it appears below */}
         {state.funds.length > 0 && (
-          <div className="bg-glass-bg border border-glass-border rounded-xl p-5 mb-4">
-            <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-4">
+          <div className="rounded-2xl p-5 mb-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+            <h3 className="label-text mb-4">
               Fund Allocation Split
             </h3>
             <FundAllocationPie 

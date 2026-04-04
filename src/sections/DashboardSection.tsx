@@ -19,6 +19,7 @@ import {
   Lightbulb,
   RotateCcw,
   Pencil,
+  LayoutDashboard,
 } from "lucide-react";
 
 export function DashboardSection() {
@@ -77,17 +78,19 @@ export function DashboardSection() {
       id={SECTION_IDS.dashboard}
       title="Dashboard"
       description="Portfolio overview and key projections"
+      icon={<LayoutDashboard size={20} />}
+      accent="green"
     >
       {isEmpty && (
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
             <Wallet size={28} className="text-accent" />
           </div>
-          <h3 className="text-lg font-display font-semibold text-slate-200 mb-2">
+          <h3 className="text-lg font-display font-semibold text-white mb-2">
             Welcome to your Investment Planner
           </h3>
-          <p className="text-sm text-slate-400 max-w-md leading-relaxed mb-6">
-            Start by scrolling down to the <span className="text-slate-200 font-medium">SIP Investment</span> section.
+          <p className="text-sm text-slate-500 max-w-md leading-relaxed mb-6">
+            Start by scrolling down to the <span className="text-emerald-400 font-medium">SIP Investment</span> section.
             Set your monthly SIP amount, add your funds, and watch your projections come alive.
           </p>
           <button
@@ -158,8 +161,9 @@ export function DashboardSection() {
           value={formatCurrency(state.monthlySip)}
           animateValue={state.monthlySip}
           formatAnimated={(n) => formatCurrency(Math.round(n))}
-          icon={<Wallet size={15} />}
+          icon={<Wallet size={14} />}
           polarity="neutral"
+          gradient="blue"
           tooltip="The total amount you invest every month across all your mutual funds. This is split across your funds based on the allocation percentages you set."
         />
 
@@ -170,8 +174,9 @@ export function DashboardSection() {
           animateValue={portfolioTotals.tenYear}
           formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
           subtitle={`Invested: ${formatCurrencyCompact(portfolioTotals.investedTenYear)}`}
-          icon={<BarChart3 size={15} />}
+          icon={<BarChart3 size={14} />}
           polarity="positive"
+          gradient="green"
           tooltip="Your estimated portfolio value after 10 years if you keep the same SIP amount every month (no annual increase). Each fund is projected at its own CAGR and then summed."
         />
 
@@ -181,8 +186,9 @@ export function DashboardSection() {
           value={formatCurrencyCompact(tenYearGain)}
           animateValue={tenYearGain}
           formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
-          icon={<TrendingUp size={15} />}
+          icon={<TrendingUp size={14} />}
           polarity="positive"
+          gradient="purple"
           tooltip="The profit your investments earn — the difference between your total portfolio value and the total money you put in. This is your real wealth creation."
         />
 
@@ -194,18 +200,20 @@ export function DashboardSection() {
             animateValue={tenYearStepUp?.portfolioValue ?? 0}
             formatAnimated={(n) => formatCurrencyCompact(Math.round(n))}
             subtitle={tenYearStepUp ? `Invested: ${formatCurrencyCompact(tenYearStepUp.totalInvested)}` : undefined}
-            icon={<PiggyBank size={15} />}
+            icon={<PiggyBank size={14} />}
             polarity="positive"
+            gradient="orange"
             tooltip="Your estimated portfolio value after 10 years if you increase your SIP by the step-up % every year."
           />
         )}
 
         {/* 5. Editable CAGR */}
-        <div className="relative bg-glass-bg border border-glass-border rounded-xl p-4 overflow-visible hover:bg-glass-hover transition-colors duration-200">
-          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/60 to-teal-500/60 rounded-b-xl" />
+        <div className="relative rounded-2xl p-4 overflow-visible transition-all duration-300 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.04))', border: '1px solid rgba(99,102,241,0.2)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', backdropFilter: 'blur(16px)' }}>
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-400 to-violet-400 rounded-t-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none rounded-2xl" />
 
           <div className="flex items-start justify-between mb-2">
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+            <span className="label-text">
               Wtd. Avg CAGR
             </span>
             <div className="relative group/tip">
@@ -232,7 +240,7 @@ export function DashboardSection() {
                   if (e.key === "Enter") commitCagr();
                   if (e.key === "Escape") setEditingCagr(false);
                 }}
-                className="w-20 bg-navy-800 border border-accent/40 rounded px-2 py-1 text-xl font-mono text-slate-100 outline-none focus:border-accent"
+                className="w-20 bg-navy-800 border border-indigo-400/40 rounded-lg px-2 py-1 text-xl font-mono text-slate-100 outline-none focus:border-indigo-400"
                 step="0.5"
                 min="0"
                 max="50"
@@ -242,7 +250,7 @@ export function DashboardSection() {
           ) : (
             <button
               onClick={startEditCagr}
-              className="font-mono text-2xl font-semibold text-slate-100 tracking-tight hover:text-accent transition-colors cursor-pointer flex items-center gap-2"
+              className="font-mono text-2xl font-bold text-indigo-300 tracking-tight hover:text-indigo-200 transition-colors cursor-pointer flex items-center gap-2"
               title="Click to set custom CAGR"
             >
               {formatDecimalAsPercent(wtdAvgCagrDecimal)}
@@ -275,8 +283,8 @@ export function DashboardSection() {
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="bg-glass-bg border border-glass-border rounded-xl p-4">
-          <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-2">
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+          <h3 className="label-text mb-3">
             Allocation Split
           </h3>
           <AllocationDonut
@@ -295,8 +303,8 @@ export function DashboardSection() {
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-glass-bg border border-glass-border rounded-xl p-4">
-          <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-2">
+        <div className="lg:col-span-2 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+          <h3 className="label-text mb-3">
             10-Year Wealth Growth — Flat vs Step-Up
           </h3>
           <WealthGrowthChart data={flatVsStepUp} />
@@ -305,10 +313,10 @@ export function DashboardSection() {
 
       {/* Plain English summary */}
       {tenYearStepUp && inflation10Y && taxDrag10Y && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-glass-bg border border-glass-border">
+        <div className="flex items-start gap-3 p-5 rounded-2xl" style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.15)' }}>
           <Lightbulb size={18} className="text-accent mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-slate-300 leading-relaxed">
-            <strong className="text-slate-100">What this means for you:</strong>{" "}
+          <div className="text-sm text-slate-400 leading-relaxed">
+            <strong className="text-emerald-300 font-display">What this means for you:</strong>{" "}
             You're investing{" "}
             <span className="font-mono font-semibold text-slate-100">
               {formatCurrency(state.monthlySip)}

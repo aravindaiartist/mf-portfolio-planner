@@ -7,30 +7,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: { // keeping navy tokens in case some files still use them, but redefining to white-ish for safety
-          950: "#f8fafc",
-          900: "#ffffff",
-          800: "#f1f5f9",
-          700: "#e2e8f0",
-          600: "#cbd5e1",
+        navy: {
+          950: "#0b0f1e",
+          900: "#0f1629",
+          800: "#141b35",
+          700: "#1a2340",
+          600: "#1e2a4a",
         },
         brand: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          500: '#10b981',
-          600: '#059669',
-          900: '#064e3b',
+          purple: "#7c3aed",
+          violet: "#8b5cf6",
+          indigo: "#6366f1",
+          blue: "#3b82f6",
+          teal: "#14b8a6",
+          green: "#10b981",
+          emerald: "#059669",
         },
         accent: {
-          DEFAULT: "#059669",
-          light: "#10b981",
+          DEFAULT: "#10b981",
+          light: "#34d399",
+          glow: "rgba(16, 185, 129, 0.15)",
         },
-        negative: "#ef4444",
+        negative: "#f43f5e",
         warn: "#f59e0b",
         glass: {
-          bg: "rgba(255, 255, 255, 0.7)",
-          border: "rgba(226, 232, 240, 0.8)",
-          hover: "rgba(241, 245, 249, 0.8)",
+          bg: "rgba(255,255,255,0.04)",
+          border: "rgba(255,255,255,0.09)",
+          hover: "rgba(255,255,255,0.08)",
+          strong: "rgba(255,255,255,0.12)",
         },
       },
       fontFamily: {
@@ -39,8 +43,11 @@ export default {
         mono: ['"JetBrains Mono"', "monospace"],
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-out",
-        "slide-up": "slideUp 0.4s ease-out",
+        "fade-in": "fadeIn 0.6s ease-out",
+        "slide-up": "slideUp 0.5s ease-out",
+        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "shimmer": "shimmer 2s linear infinite",
+        "glow": "glow 3s ease-in-out infinite",
       },
       keyframes: {
         fadeIn: {
@@ -48,9 +55,29 @@ export default {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(12px)" },
+          "0%": { opacity: "0", transform: "translateY(16px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        glow: {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
+      },
+      backgroundImage: {
+        "hero-gradient":
+          "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.18) 0%, transparent 70%), radial-gradient(ellipse 60% 40% at 80% 50%, rgba(16,185,129,0.10) 0%, transparent 60%)",
+        "card-shine":
+          "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.03) 100%)",
+      },
+      boxShadow: {
+        "card": "0 4px 24px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.2)",
+        "card-hover": "0 8px 40px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.3)",
+        "accent": "0 0 24px rgba(16,185,129,0.2)",
+        "purple": "0 0 24px rgba(139,92,246,0.2)",
       },
     },
   },

@@ -7,7 +7,7 @@ import {
   formatDecimalAsPercent,
   formatPercent,
 } from "@/lib/formatters";
-import { ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertTriangle, Receipt } from "lucide-react";
 
 export function TaxImpactSection() {
   const { state, ltcgResults, ltcgPerFundResults } = usePortfolio();
@@ -20,6 +20,8 @@ export function TaxImpactSection() {
       id={SECTION_IDS.taxImpact}
       title="LTCG Tax Impact"
       description={`LTCG at ${state.ltcgTaxRate}% on equity gains above ₹${(state.ltcgExemptionPerYear / 1000).toFixed(0)}K per financial year.`}
+      icon={<Receipt size={20} />}
+      accent="orange"
     >
       {noData ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -27,8 +29,8 @@ export function TaxImpactSection() {
         </div>
       ) : (<>
       {/* Portfolio-level table — PRIMARY */}
-      <div className="bg-glass-bg border border-glass-border rounded-xl p-4 mb-4">
-        <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-3">
+      <div className="rounded-2xl p-5 mb-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+        <h3 className="label-text mb-3">
           Portfolio-Level Tax Projection
         </h3>
 
@@ -92,7 +94,7 @@ export function TaxImpactSection() {
       </div>
 
       {/* Per-fund toggle — ILLUSTRATIVE */}
-      <div className="bg-glass-bg border border-glass-border rounded-xl overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
         <button
           onClick={() => setShowPerFund(!showPerFund)}
           className="w-full flex items-center justify-between p-4 text-left hover:bg-white/[0.02] transition-colors"

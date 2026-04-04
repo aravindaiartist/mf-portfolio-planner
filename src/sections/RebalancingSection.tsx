@@ -126,6 +126,8 @@ export function RebalancingSection() {
       id={SECTION_IDS.rebalancing}
       title="Rebalancing Alerts"
       description="Enter current fund values to detect allocation drift and get BUY / SELL / HOLD signals."
+      icon={<Scale size={20} />}
+      accent="blue"
     >
       {/* ── Snapshot KPI cards ─────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
@@ -208,7 +210,7 @@ export function RebalancingSection() {
       </div>
 
       {/* ── Fund-level tracker table ───────────────────── */}
-      <div className="bg-glass-bg border border-glass-border rounded-xl overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

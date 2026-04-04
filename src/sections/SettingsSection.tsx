@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   FileJson,
+  Settings,
 } from "lucide-react";
 
 export function SettingsSection() {
@@ -83,10 +84,12 @@ export function SettingsSection() {
       id={SECTION_IDS.settings}
       title="Settings"
       description="Export your data for backup, import a previous backup, or reset to defaults."
+      icon={<Settings size={20} />}
+      accent="purple"
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Export */}
-        <div className="bg-glass-bg border border-glass-border rounded-xl p-5">
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
           <div className="flex items-center gap-2 mb-3">
             <Download size={18} className="text-accent" />
             <h3 className="text-sm font-semibold text-slate-200">Export Data</h3>
@@ -110,7 +113,7 @@ export function SettingsSection() {
         </div>
 
         {/* Import */}
-        <div className="bg-glass-bg border border-glass-border rounded-xl p-5">
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
           <div className="flex items-center gap-2 mb-3">
             <Upload size={18} className="text-sky-400" />
             <h3 className="text-sm font-semibold text-slate-200">Import Data</h3>
@@ -141,7 +144,7 @@ export function SettingsSection() {
         </div>
 
         {/* Reset */}
-        <div className="bg-glass-bg border border-glass-border rounded-xl p-5">
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
           <div className="flex items-center gap-2 mb-3">
             <RotateCcw size={18} className="text-rose-400" />
             <h3 className="text-sm font-semibold text-slate-200">Reset to Defaults</h3>

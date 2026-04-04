@@ -3,7 +3,7 @@ import { SECTION_IDS } from "@/lib/constants";
 import { SectionWrapper } from "@/components/layout/SectionWrapper";
 import { ProjectionBarChart } from "@/components/charts/ProjectionBarChart";
 import { usePortfolio } from "@/hooks/usePortfolio";
-import { Pencil, RotateCcw } from "lucide-react";
+import { Pencil, RotateCcw, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getRiskLevel, getCategoryColor } from "@/lib/calc/riskLevel";
 import { sanitizeNumber } from "@/lib/validators";
@@ -72,6 +72,8 @@ export function EstimatedReturnsSection() {
       id={SECTION_IDS.estimatedReturns}
       title="Estimated Returns"
       description="Projected portfolio value at 3, 5, and 10 year horizons. Returns are estimates based on assumed CAGR."
+      icon={<TrendingUp size={20} />}
+      accent="green"
     >
       {noFunds ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -80,8 +82,8 @@ export function EstimatedReturnsSection() {
       ) : (<>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Table */}
-        <div className="lg:col-span-3 bg-glass-bg border border-glass-border rounded-xl p-4">
-          <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-3">
+        <div className="lg:col-span-3 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+          <h3 className="label-text mb-3">
             Per-Fund Projections (Flat SIP)
           </h3>
 
@@ -238,8 +240,8 @@ export function EstimatedReturnsSection() {
         </div>
 
         {/* Bar chart */}
-        <div className="lg:col-span-2 bg-glass-bg border border-glass-border rounded-xl p-4">
-          <h3 className="text-xs text-slate-400 uppercase tracking-wider mb-2">
+        <div className="lg:col-span-2 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+          <h3 className="label-text mb-3">
             Invested vs Estimated Value
           </h3>
           <ProjectionBarChart data={barData} />
