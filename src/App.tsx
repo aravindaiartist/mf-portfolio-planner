@@ -55,10 +55,11 @@ function AppInner() {
 
                 {/* Hero title */}
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-[1.1] mb-5">
-                  <span className="text-white">Plan Your</span>
+                  <span className="text-white">Plan your </span>
+                  <span className="gradient-text-green">Wealth,</span>
                   <br />
-                  <span className="gradient-text-green">Wealth Growth</span>
-                  <span className="text-white"> Journey</span>
+                  <span className="text-white">Grow your </span>
+                  <span className="gradient-text-blue">Money</span>
                 </h1>
 
                 <p className="text-slate-400 text-base sm:text-lg max-w-lg leading-relaxed mb-8">
@@ -142,7 +143,7 @@ function AppInner() {
                   >
                     <Briefcase size={20} className="text-indigo-400" />
                   </div>
-                  <span className="text-xs font-semibold text-indigo-300 tracking-wide uppercase">Managers</span>
+                  <span className="text-xs font-semibold text-indigo-300 tracking-wide uppercase text-center leading-tight">Fund<br/>Manager</span>
                 </div>
 
                 {/* Bottom Node: Portfolio */}

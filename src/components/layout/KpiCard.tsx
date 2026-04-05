@@ -87,58 +87,55 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "relative rounded-2xl p-4 overflow-hidden group transition-all duration-300",
-        "bg-gradient-to-br border",
-        "hover:-translate-y-0.5 hover:shadow-xl",
-        colors.bg,
-        colors.border,
-        colors.glow,
+        "relative flex flex-col h-full rounded-[2rem] p-5 overflow-visible group transition-all duration-300",
+        "hover:-translate-y-1 hover:shadow-2xl"
       )}
       style={{
-        boxShadow: "0 4px 20px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)",
+        boxShadow: "-2px -2px 6px rgba(255,255,255,0.04), 4px 4px 12px rgba(0,0,0,0.5), inset 1px 1px 3px rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.05)",
         backdropFilter: "blur(16px)",
       }}
     >
-      {/* Top gradient bar */}
-      <div
-        className={cn(
-          "absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r rounded-t-2xl",
-          colors.bar
-        )}
-      />
+      {/* Inner clipping layer to mathematically perfectly cut the top gradient line and background against the curved border */}
+      <div className={cn("absolute inset-0 rounded-[2rem] overflow-hidden pointer-events-none bg-gradient-to-br", colors.bg, colors.glow)}>
+        {/* Top gradient bar */}
+        <div className={cn("absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r", colors.bar)} />
+        {/* Shine overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+      </div>
 
-      {/* Shine overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none rounded-2xl" />
-
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className="flex flex-col items-center justify-center flex-1 w-full gap-2 relative z-10 text-center">
+        {/* Header: Icon + Label + Tooltip */}
+        <div className="flex items-center justify-center gap-2 max-w-full relative">
           {icon && (
             <span className={cn("w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0", colors.icon)}>
               {icon}
             </span>
           )}
-          <span className="label-text truncate">{label}</span>
+          <span className="label-text truncate max-w-[120px] sm:max-w-full">{label}</span>
+          
+          {tooltip && (
+            <div className="relative group/tip flex-shrink-0">
+              <HelpCircle size={12} className="text-slate-600 hover:text-slate-400 cursor-help transition-colors" />
+              <div className="invisible group-hover/tip:visible opacity-0 group-hover/tip:opacity-100 transition-all duration-200 absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 rounded-xl bg-navy-800 border border-glass-strong shadow-2xl shadow-black/60 pointer-events-none">
+                <p className="text-xs text-slate-300 leading-relaxed text-left">{tooltip}</p>
+              </div>
+            </div>
+          )}
         </div>
 
-        {tooltip && (
-          <div className="relative group/tip flex-shrink-0 ml-1">
-            <HelpCircle size={12} className="text-slate-600 hover:text-slate-400 cursor-help transition-colors" />
-            <div className="invisible group-hover/tip:visible opacity-0 group-hover/tip:opacity-100 transition-all duration-200 absolute z-50 right-0 top-6 w-64 p-3 rounded-xl bg-navy-800 border border-glass-strong shadow-2xl shadow-black/60">
-              <p className="text-xs text-slate-300 leading-relaxed">{tooltip}</p>
-            </div>
-          </div>
-        )}
-      </div>
+        {/* Value */}
+        <div className={cn("font-mono text-3xl font-bold tracking-tight", colors.value)}>
+          {displayValue}
+        </div>
 
-      {/* Value */}
-      <div className={cn("font-mono text-2xl font-bold tracking-tight", colors.value)}>
-        {displayValue}
+        {/* Subtitle - Fixed min-height guarantees strict horizontal alignment of the Value above it across cards */}
+        <div className="min-h-[16px] w-full flex items-center justify-center mt-1">
+          {subtitle && (
+            <p className="text-[11px] text-slate-500 font-mono tracking-wide">{subtitle}</p>
+          )}
+        </div>
       </div>
-
-      {subtitle && (
-        <p className="mt-1.5 text-xs text-slate-500 font-mono">{subtitle}</p>
-      )}
     </div>
   );
 }

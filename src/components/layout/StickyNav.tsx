@@ -42,9 +42,9 @@ export function StickyNav() {
         {/* Logo + Brand */}
         <button
           onClick={scrollToTop}
-          className="flex items-center gap-2.5 mr-2 flex-shrink-0 group"
+          className="flex items-center gap-2 mr-4 flex-shrink-0 group"
         >
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105"
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110"
             style={{
               background: "linear-gradient(135deg, #10b981, #059669)",
               boxShadow: "0 0 16px rgba(16,185,129,0.35)",
@@ -52,91 +52,110 @@ export function StickyNav() {
           >
             <TrendingUp size={15} className="text-white" strokeWidth={2.5} />
           </div>
-          <div className="hidden sm:flex flex-col">
-            <span className="font-display font-bold text-[14px] text-slate-100 tracking-tight leading-none mb-1.5">
-              Mutual Fund Portfolio Planner
+          <div className="flex flex-col text-left">
+            <span className="font-display font-bold text-[13.5px] text-slate-100 tracking-tight leading-none mb-1">
+              MF Portfolio <span className="text-emerald-400">Planner</span>
             </span>
-            <span className="text-[9px] text-slate-500 tracking-widest uppercase leading-none">
-              Smart SIP Planning
+            <span className="text-[8.5px] text-slate-500 tracking-widest uppercase leading-none font-medium">
+              SMART SIP PLANNING
             </span>
           </div>
         </button>
-
-        <div className="w-px h-6 bg-white/[0.07] mr-1 flex-shrink-0" />
 
         {/* Home button */}
         <button
           onClick={() => scrollTo(SECTION_IDS.dashboard)}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex-shrink-0",
+            "flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-300 flex-shrink-0 group",
             activeId === SECTION_IDS.dashboard
-              ? "bg-emerald-500/12 text-emerald-400"
-              : "text-slate-500 hover:text-slate-200 hover:bg-white/[0.05]"
+              ? "text-emerald-400"
+              : "text-slate-400 hover:text-slate-200"
           )}
+          style={
+            activeId === SECTION_IDS.dashboard
+              ? {
+                  background: "linear-gradient(145deg, rgba(6,11,24,0.95), rgba(16,185,129,0.12))",
+                  boxShadow: "inset 1px 1px 3px rgba(255,255,255,0.12), inset -2px -2px 5px rgba(0,0,0,0.7), 0 4px 15px rgba(0,0,0,0.3)",
+                  border: "1px solid rgba(16,185,129,0.4)",
+                }
+              : {
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2))",
+                  boxShadow: "2px 2px 6px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.03)",
+                }
+          }
         >
-          <Home size={13} strokeWidth={2} />
-          <span className="hidden lg:inline">Home</span>
+          <Home size={13} strokeWidth={2.5} />
+          <span>Home</span>
         </button>
 
-        <div className="w-px h-4 bg-white/[0.06] flex-shrink-0" />
+        <div className="w-px h-5 bg-white/[0.08] mx-2 flex-shrink-0" />
 
         {/* Section nav */}
-        <nav className="flex-1 overflow-x-auto scrollbar-hide">
-          <div className="flex items-center gap-0.5 px-1">
-            {NAV_ITEMS.map((item) => {
-              const IconComp = ICON_MAP[item.icon];
-              const isActive = activeId === item.id;
-              const isDashboard = item.id === SECTION_IDS.dashboard;
+        <nav className="flex items-center gap-2 py-1 overflow-x-auto scrollbar-hide no-scrollbar flex-1">
+          {NAV_ITEMS.map((item) => {
+            const IconComp = ICON_MAP[item.icon];
+            const isActive = activeId === item.id;
+            const isDashboard = item.id === SECTION_IDS.dashboard;
 
-              if (isDashboard) return null;
+            if (isDashboard) return null;
 
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className={cn(
-                    "relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-200",
-                    isActive
-                      ? "text-emerald-400 bg-emerald-500/10"
-                      : "text-slate-500 hover:text-slate-200 hover:bg-white/[0.05]"
-                  )}
-                >
-                  {IconComp && (
-                    <IconComp
-                      size={12}
-                      strokeWidth={isActive ? 2.5 : 1.8}
-                      className="flex-shrink-0"
-                    />
-                  )}
-                  <span className="hidden md:inline">{item.label}</span>
-
-                  {isActive && (
-                    <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400 md:hidden" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className={cn(
+                  "flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-300 group flex-shrink-0",
+                  isActive
+                    ? "text-emerald-400"
+                    : "text-slate-400 hover:text-slate-200"
+                )}
+                style={
+                  isActive
+                    ? {
+                        background: "linear-gradient(145deg, rgba(6,11,24,0.95), rgba(16,185,129,0.12))",
+                        boxShadow: "inset 1px 1px 3px rgba(255,255,255,0.12), inset -2px -2px 5px rgba(0,0,0,0.7), 0 4px 15px rgba(0,0,0,0.3)",
+                        border: "1px solid rgba(16,185,129,0.4)",
+                      }
+                    : {
+                        background: "linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2))",
+                        boxShadow: "2px 2px 6px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.03)",
+                      }
+                }
+              >
+                {IconComp && (
+                  <IconComp
+                    size={13}
+                    strokeWidth={isActive ? 2.5 : 2}
+                    className="flex-shrink-0"
+                  />
+                )}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
-        <div className="w-px h-6 bg-white/[0.07] mx-1 flex-shrink-0 hidden md:block" />
+        <div className="w-px h-5 bg-white/[0.08] mx-2 flex-shrink-0" />
 
         {/* External analysis link */}
         <a
           href="https://mf-analysis-platform.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-1.5 flex-shrink-0 group px-3 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium"
+          className="flex items-center gap-1.5 flex-shrink-0 group px-4 py-2 rounded-full transition-all duration-300 text-[11px] font-bold whitespace-nowrap"
           style={{
-            background: "rgba(139,92,246,0.08)",
-            border: "1px solid rgba(139,92,246,0.2)",
-            color: "#a78bfa",
+            background: "linear-gradient(145deg, rgba(139,92,246,0.1), rgba(0,0,0,0.3))",
+            boxShadow: "2px 2px 6px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.05)",
+            border: "1px solid rgba(139,92,246,0.3)",
+            color: "#c4b5fd",
           }}
           title="Open Mutual Fund Analysis Platform"
         >
-          <Sparkles size={11} className="flex-shrink-0" />
+          <Sparkles size={13} strokeWidth={2.5} className="flex-shrink-0 group-hover:drop-shadow-[0_0_5px_rgba(168,85,247,0.5)] transition-all" />
           <span>MF Analysis</span>
-          <ExternalLink size={10} className="opacity-60" />
+          <ExternalLink size={11} className="opacity-60 group-hover:opacity-100 transition-opacity ml-0.5" />
         </a>
       </div>
 

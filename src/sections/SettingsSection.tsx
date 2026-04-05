@@ -89,12 +89,13 @@ export function SettingsSection() {
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Export */}
-        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+        <div className="relative flex flex-col h-full rounded-[2rem] p-6 overflow-visible transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '-2px -2px 6px rgba(255,255,255,0.04), 4px 4px 12px rgba(0,0,0,0.5), inset 1px 1px 3px rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-accent rounded-t-[2rem] opacity-30" />
           <div className="flex items-center gap-2 mb-3">
             <Download size={18} className="text-accent" />
             <h3 className="text-sm font-semibold text-slate-200">Export Data</h3>
           </div>
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed flex-grow">
             Download all your portfolio data as a JSON file. Use this to back up
             your funds, allocations, rebalancing values, and settings.
           </p>
@@ -113,12 +114,13 @@ export function SettingsSection() {
         </div>
 
         {/* Import */}
-        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+        <div className="relative flex flex-col h-full rounded-[2rem] p-6 overflow-visible transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '-2px -2px 6px rgba(255,255,255,0.04), 4px 4px 12px rgba(0,0,0,0.5), inset 1px 1px 3px rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-sky-500 rounded-t-[2rem] opacity-30" />
           <div className="flex items-center gap-2 mb-3">
             <Upload size={18} className="text-sky-400" />
             <h3 className="text-sm font-semibold text-slate-200">Import Data</h3>
           </div>
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed flex-grow">
             Restore from a previously exported JSON backup file. This will
             replace all current data with the imported data.
           </p>
@@ -144,14 +146,15 @@ export function SettingsSection() {
         </div>
 
         {/* Reset */}
-        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}>
+        <div className="relative flex flex-col h-full rounded-[2rem] p-6 overflow-visible transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '-2px -2px 6px rgba(255,255,255,0.04), 4px 4px 12px rgba(0,0,0,0.5), inset 1px 1px 3px rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-rose-500 rounded-t-[2rem] opacity-30" />
           <div className="flex items-center gap-2 mb-3">
             <RotateCcw size={18} className="text-rose-400" />
-            <h3 className="text-sm font-semibold text-slate-200">Reset to Defaults</h3>
+            <h3 className="text-sm font-semibold text-slate-200">Reset All Data</h3>
           </div>
-          <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-            Clear all saved data and start fresh with an empty portfolio.
-            This cannot be undone — export your data first if needed.
+          <p className="text-xs text-slate-500 mb-4 leading-relaxed flex-grow">
+            Completely clear all funds, settings, and allocations. Warning: This
+            action is permanent and cannot be undone.
           </p>
           {!showResetConfirm ? (
             <button

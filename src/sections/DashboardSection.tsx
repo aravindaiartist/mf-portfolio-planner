@@ -208,76 +208,77 @@ export function DashboardSection() {
         )}
 
         {/* 5. Editable CAGR */}
-        <div className="relative rounded-2xl p-4 overflow-visible transition-all duration-300 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.04))', border: '1px solid rgba(99,102,241,0.2)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', backdropFilter: 'blur(16px)' }}>
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-400 to-violet-400 rounded-t-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none rounded-2xl" />
-
-          <div className="flex items-start justify-between mb-2">
-            <span className="label-text">
-              Wtd. Avg CAGR
-            </span>
-            <div className="relative group/tip">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600 hover:text-slate-400 cursor-help transition-colors">
-                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
-              </svg>
-              <div className="invisible group-hover/tip:visible opacity-0 group-hover/tip:opacity-100 transition-all duration-200 absolute z-50 right-0 top-6 w-64 p-3 rounded-lg bg-navy-900 border border-glass-border shadow-2xl shadow-black/60">
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Weighted average annual return. Click the number to set a custom CAGR for what-if analysis. All projections will update. Click "Reset" to go back to the computed value.
-                </p>
-              </div>
-            </div>
+        <div className="relative flex flex-col h-full rounded-[2rem] p-5 overflow-visible transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.04))', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '-2px -2px 6px rgba(255,255,255,0.04), 4px 4px 12px rgba(0,0,0,0.5), inset 1px 1px 3px rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
+          {/* Inner clipping layer to mathematically perfectly cut the top gradient line against the curved border */}
+          <div className="absolute inset-0 rounded-[2rem] overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-400 to-violet-400" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none" />
           </div>
 
-          {editingCagr ? (
-            <div className="flex items-center gap-1">
-              <input
-                autoFocus
-                type="number"
-                value={tempCagr}
-                onChange={(e) => setTempCagr(e.target.value)}
-                onBlur={commitCagr}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") commitCagr();
-                  if (e.key === "Escape") setEditingCagr(false);
-                }}
-                className="w-20 bg-navy-800 border border-indigo-400/40 rounded-lg px-2 py-1 text-xl font-mono text-slate-100 outline-none focus:border-indigo-400"
-                step="0.5"
-                min="0"
-                max="50"
-              />
-              <span className="text-xl text-slate-400">%</span>
+          <div className="flex flex-col items-center justify-center flex-1 w-full gap-2 relative z-10 text-center">
+            {/* Header: Label + Tooltip */}
+            <div className="flex items-center justify-center gap-2 max-w-full relative w-full">
+              <span className="label-text truncate max-w-[120px] sm:max-w-full">
+                Wtd. Avg CAGR
+              </span>
+              <div className="relative group/tip flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600 hover:text-slate-400 cursor-help transition-colors">
+                  <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+                </svg>
+                <div className="invisible group-hover/tip:visible opacity-0 group-hover/tip:opacity-100 transition-all duration-200 absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 rounded-lg bg-navy-900 border border-glass-border shadow-2xl shadow-black/60 pointer-events-none">
+                  <p className="text-xs text-slate-300 leading-relaxed text-left">
+                    Weighted average annual return. Click the number to set a custom CAGR for what-if analysis. All projections will update. Click "Reset" to go back to the computed value.
+                  </p>
+                </div>
+              </div>
             </div>
-          ) : (
-            <button
-              onClick={startEditCagr}
-              className="font-mono text-2xl font-bold text-indigo-300 tracking-tight hover:text-indigo-200 transition-colors cursor-pointer flex items-center gap-2"
-              title="Click to set custom CAGR"
-            >
-              {formatDecimalAsPercent(wtdAvgCagrDecimal)}
-              <Pencil size={13} className="text-slate-500" />
-            </button>
-          )}
 
-          {isUsingCagrOverride ? (
-            <div className="mt-1 flex items-center gap-2">
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 font-medium">
-                Custom
-              </span>
-              <span className="text-[10px] text-slate-500">
-                (Computed: {formatDecimalAsPercent(computedWtdAvgCagr)})
-              </span>
+            {/* Value (Editable) */}
+            {editingCagr ? (
+              <div className="flex items-center justify-center gap-1">
+                <input
+                  autoFocus
+                  type="number"
+                  value={tempCagr}
+                  onChange={(e) => setTempCagr(e.target.value)}
+                  onBlur={commitCagr}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") commitCagr();
+                    if (e.key === "Escape") setEditingCagr(false);
+                  }}
+                  className="w-20 bg-navy-800 border border-indigo-400/40 rounded-lg px-2 py-1 text-xl font-mono text-slate-100 outline-none focus:border-indigo-400 text-center"
+                  step="0.5"
+                  min="0"
+                  max="50"
+                />
+                <span className="text-xl text-slate-400">%</span>
+              </div>
+            ) : (
               <button
-                onClick={resetCagr}
-                className="flex items-center gap-0.5 text-[10px] text-slate-500 hover:text-accent transition-colors"
-                title="Reset to computed value"
+                onClick={startEditCagr}
+                className="font-mono text-3xl font-bold text-indigo-300 tracking-tight hover:text-indigo-200 transition-colors cursor-pointer flex items-center justify-center gap-2"
+                title="Click to set custom CAGR"
               >
-                <RotateCcw size={9} />
-                Reset
+                {formatDecimalAsPercent(wtdAvgCagrDecimal)}
+                <Pencil size={13} className="text-slate-500" />
               </button>
+            )}
+
+            {/* Subtitle - Fixed min-height guarantees strict horizontal alignment across cards */}
+            <div className="min-h-[16px] w-full flex items-center justify-center mt-1">
+              {isUsingCagrOverride ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 font-medium">Custom</span>
+                  <span className="text-[10px] text-slate-500">(Computed: {formatDecimalAsPercent(computedWtdAvgCagr)})</span>
+                  <button onClick={resetCagr} className="flex items-center gap-0.5 text-[10px] text-slate-500 hover:text-accent transition-colors ml-1">
+                    <RotateCcw size={9} /> Reset
+                  </button>
+                </div>
+              ) : (
+                <p className="text-[11px] text-slate-500 font-mono tracking-wide">Click to edit</p>
+              )}
             </div>
-          ) : (
-            <p className="mt-1 text-[10px] text-slate-600">Click to edit</p>
-          )}
+          </div>
         </div>
       </div>
 
