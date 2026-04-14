@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-// Calls our own Vercel serverless function (/api/visitors) which proxies
-// counterapi.dev server-side — avoids any CORS issues in the browser.
-const API_BASE = "/api/visitors";
+// counterapi.dev V1 — free, no-auth, CORS-enabled counter API
+const COUNTER_URL =
+  "https://api.counterapi.dev/v1/mf-portfolio-planner-aravindan/visitor-count";
 
 export function useVisitorCount() {
   const [count, setCount] = useState<number | null>(null);
@@ -12,20 +12,17 @@ export function useVisitorCount() {
 
     async function trackVisit() {
       try {
-        // Only increment once per browser session (not on every re-render / HMR reload)
+        // Only increment once per browser session
         const sessionKey = "mfpp_visit_counted";
         const alreadyCounted = sessionStorage.getItem(sessionKey);
 
-        const url = alreadyCounted
-          ? API_BASE                               // read only
-          : `${API_BASE}?action=increment`;        // increment + read
-
+        const action = alreadyCounted ? "get" : "up";
         if (!alreadyCounted) {
           sessionStorage.setItem(sessionKey, "1");
         }
 
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Visitor API error");
+        const res = await fetch(`${COUNTER_URL}/${action}`);
+        if (!res.ok) throw new Error("CounterAPI error");
         const data = await res.json();
 
         if (!cancelled) {
