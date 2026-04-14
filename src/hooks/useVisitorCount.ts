@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 const NAMESPACE = "mf-portfolio-planner-aravindan";
 const KEY = "visitor-count";
-// Using counterapi.dev — a free, no-backend visitor counter service
-const API_BASE = "https://counterapi.dev/api";
+// Using counterapi.dev V1 — free, no-auth, no-backend visitor counter
+const API_BASE = "https://api.counterapi.dev/v1";
 
 export function useVisitorCount() {
   const [count, setCount] = useState<number | null>(null);
