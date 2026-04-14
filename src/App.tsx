@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { PortfolioProvider, usePortfolioContext } from "@/context/PortfolioContext";
 import { prewarmLiveIndex } from "@/lib/mfapi";
 import { useFetchCagr } from "@/hooks/useFetchCagr";
+import { useVisitorCount } from "@/hooks/useVisitorCount";
 import { StickyNav } from "@/components/layout/StickyNav";
 import { DashboardSection } from "@/sections/DashboardSection";
 import { SipCalculatorSection } from "@/sections/SipCalculatorSection";
@@ -11,11 +12,12 @@ import { TaxImpactSection } from "@/sections/TaxImpactSection";
 import { InflationSection } from "@/sections/InflationSection";
 import { RebalancingSection } from "@/sections/RebalancingSection";
 import { SettingsSection } from "@/sections/SettingsSection";
-import { AlertTriangle, TrendingUp, Sparkles, ChevronDown, Users, Briefcase, Activity, Banknote, RefreshCcw } from "lucide-react";
+import { AlertTriangle, TrendingUp, Sparkles, ChevronDown, Users, Briefcase, Activity, Banknote, RefreshCcw, Eye } from "lucide-react";
 
 function AppInner() {
   const { state } = usePortfolioContext();
   const { fetchAllMissing } = useFetchCagr();
+  const { count: visitorCount } = useVisitorCount();
 
   useEffect(() => {
     if (state.funds.length > 0) {
@@ -269,6 +271,25 @@ function AppInner() {
           <p className="text-xs text-slate-600 leading-relaxed">
             Data sourced from AMFI via mfapi.in · Benchmarks per SEBI Circular Oct 2021
           </p>
+
+          {/* Visitor counter badge */}
+          {visitorCount !== null && (
+            <div
+              className="inline-flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full"
+              style={{
+                background: "rgba(56, 189, 248, 0.06)",
+                border: "1px solid rgba(56, 189, 248, 0.2)",
+                boxShadow: "0 0 12px rgba(56, 189, 248, 0.12)",
+              }}
+            >
+              <Eye size={11} className="text-sky-400" />
+              <span className="text-[11px] font-mono font-semibold text-sky-300">
+                {visitorCount.toLocaleString()}
+              </span>
+              <span className="text-[11px] text-slate-500">visitors</span>
+            </div>
+          )}
+
           <p className="text-xs text-slate-600 mt-3">
             © 2026 Aravindan Natarajan. All rights reserved.
           </p>
